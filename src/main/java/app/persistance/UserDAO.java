@@ -1,6 +1,8 @@
 package app.persistance;
 
 
+import java.util.List;
+
 import app.entities.Role;
 import app.entities.User;
 import app.exceptions.EntityNotFoundException;
@@ -77,5 +79,11 @@ public class UserDAO implements IUserDAO {
         em.getTransaction().commit();
         em.close();
         return user;
+    }
+
+    public List<User> getAllUsers() {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("From User u", User.class).getResultList();
+        }       
     }
 }

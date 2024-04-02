@@ -20,10 +20,10 @@ public class UserDTO {
     public UserDTO(User user){
         this.username = user.getUsername();
         this.password = user.getPassword();
-        this.roles = user.getRolesAsStrings();
+        this.roles    = user.getRolesAsStrings();
     }
     public UserDTO(String username, Set<String> roleSet){
         this.username = username;
-        this.roles = roleSet;
+        this.roles    = roleSet;
     }
 }

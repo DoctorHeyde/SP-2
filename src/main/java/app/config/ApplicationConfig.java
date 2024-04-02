@@ -59,7 +59,7 @@ public class ApplicationConfig {
     public ApplicationConfig checkSecurityRoles() {
         app.updateConfig(config -> {
             config.accessManager((handler, ctx, permittedRoles) -> {
-                UserDTO user = ctx.sessionAttribute("user");
+                UserDTO user = ctx.attribute("user");
                 Set<String> allowedRoles = permittedRoles.stream().map(role -> role.toString().toUpperCase())
                         .collect(Collectors.toSet());
                 if (allowedRoles.contains("ANYONE") || ctx.method().toString().equals("OPTIONS")) {

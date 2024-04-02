@@ -54,8 +54,6 @@ public class SecurityController implements ISecurityController {
                 User verifiedUserEntity = userDAO.verifyUser(user.getUsername(), user.getPassword());
                 String token = tokenUtil.createToken(new UserDTO(verifiedUserEntity));
                 ctx.status(200).json(new TokenDTO(token, user.getUsername()));
-                UserDTO userDTO = new UserDTO(verifiedUserEntity);
-                ctx.sessionAttribute("user", userDTO);
             } catch (EntityNotFoundException | ValidationException e) {
                 ctx.status(401);
                 System.out.println(e.getMessage());
@@ -109,7 +107,7 @@ public class SecurityController implements ISecurityController {
                 ctx.status(HttpStatus.FORBIDDEN).json(returnObject.put("msg", "Invalid User or Token"));
             }
             System.out.println("USER IN AUTHENTICATE: " + verifiedTokenUser);
-            ctx.sessionAttribute("user", verifiedTokenUser);
+            ctx.attribute("user", verifiedTokenUser);
         };
     }
 

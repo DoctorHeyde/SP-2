@@ -20,6 +20,8 @@ import lombok.ToString;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 
 @Getter
 @Setter
@@ -38,6 +40,7 @@ public class User {
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_name", referencedColumnName = "username"), inverseJoinColumns = @JoinColumn(name = "role_name", referencedColumnName = "name"))
+    @JsonManagedReference
     private Set<Role> roles = new HashSet<>();
 
     public User(String username, String password) {

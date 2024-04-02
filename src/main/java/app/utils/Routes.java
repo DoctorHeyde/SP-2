@@ -45,6 +45,7 @@ public class Routes {
 
     public EndpointGroup securedRoutes() {
         return () -> {
+            before(securityController.authenticate());
             path("/users", () -> {
                 get(adminController.getAllUsers(), SecurityRoles.ADMIN);
             });

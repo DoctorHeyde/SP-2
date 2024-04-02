@@ -69,7 +69,7 @@ public class SecurityTests {
     
     @Test
     public void defTest(){
-        given().when().get("/").peek().then().statusCode(200);
+        given().when().get("/test/hello").peek().then().statusCode(200);
     }
     
     @Test

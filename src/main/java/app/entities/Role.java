@@ -3,6 +3,8 @@ package app.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +22,7 @@ public class Role {
 
     @ToString.Exclude
     @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JsonBackReference
     private Set<User> users = new HashSet<>();
 
     public Role(String name) {
