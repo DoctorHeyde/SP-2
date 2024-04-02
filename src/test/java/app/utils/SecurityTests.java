@@ -131,7 +131,7 @@ public class SecurityTests {
     }
 
     @Test
-    public void userTryesToAccessAdmin() throws JsonMappingException, JsonProcessingException {
+    public void userTriesToAccessAdmin() throws JsonMappingException, JsonProcessingException {
         String requestBody = "{\"username\": \"user\",\"password\": \"user\"}";
         Response res =
             given()
