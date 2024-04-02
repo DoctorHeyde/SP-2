@@ -1,54 +1,66 @@
 package app.entities;
 
-import java.util.HashSet;
-import java.util.Set;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
+import jakarta.persistence.*;
+import lombok.*;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
 @Entity
 @ToString
+@Table(name = "users")
+//@NamedQueries(@NamedQuery(name = "User.deleteAllRows", query = "DELETE FROM User"))
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
 public class User {
     @Id
-    @Column(name = "username", nullable = false)
-    String username;
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
 
     private String password;
 
+    private String name;
+
+    private int phoneNumber;
+
+
+    @ManyToMany (mappedBy = "users")
     @ToString.Exclude
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_name", referencedColumnName = "username"), inverseJoinColumns = @JoinColumn(name = "role_name", referencedColumnName = "name"))
+    private Set<Event> events = new HashSet<>();
+
+    @ManyToMany
+    @ToString.Exclude
     private Set<Role> roles = new HashSet<>();
 
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
-        String salt = BCrypt.gensalt();
-        this.password = BCrypt.hashpw(password, salt);
+
+    public User(String email, String password, String name, int phoneNumber) {
+        this.email = email;
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+        this.name = name;
+        this.phoneNumber = phoneNumber;
     }
 
-    public boolean verifyUser(String password) {
-        return BCrypt.checkpw(password, this.password);
+
+    public boolean verifyPassword(String passwordToCheck){
+
+        return BCrypt.checkpw(passwordToCheck, this.password);
+    }
+
+
+    public Set<String> getRolesAsString(){
+
+        if (roles.isEmpty()) {
+            return null;
+        }
+        Set<String> rolesAsStrings = new HashSet<>();
+        roles.forEach((role) -> {
+            rolesAsStrings.add(role.getName());
+        });
+        return rolesAsStrings;
     }
 
     public void addRole(Role role) {
@@ -60,16 +72,4 @@ public class User {
         roles.remove(role);
         role.getUsers().remove(this);
     }
-
-    public Set<String> getRolesAsStrings() {
-        if (roles.isEmpty()) {
-            return null;
-        }
-        Set<String> rolesAsStrings = new HashSet<>();
-        roles.forEach((role) -> {
-            rolesAsStrings.add(role.getName());
-        });
-        return rolesAsStrings;
-    }
 }
-

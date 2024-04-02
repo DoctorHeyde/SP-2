@@ -32,10 +32,11 @@ public class SecurityController implements ISecurityController {
             ObjectNode returnObject = objectMapper.createObjectNode();
             try {
                 UserDTO userInput = ctx.bodyAsClass(UserDTO.class);
-                User created = userDAO.createUser(userInput.getUsername(), userInput.getPassword());
+                User created = userDAO.createUser(userInput.getEmail(), userInput.getPassword(),
+                        userInput.getName(), userInput.getPhoneNumber(), userInput.getRoles());
 
                 String token = tokenUtil.createToken(new UserDTO(created));
-                ctx.status(HttpStatus.CREATED).json(new TokenDTO(token, userInput.getUsername()));
+                ctx.status(HttpStatus.CREATED).json(new TokenDTO(token, userInput.getEmail()));
             } catch (EntityExistsException e) {
                 ctx.status(HttpStatus.UNPROCESSABLE_CONTENT);
                 ctx.json(returnObject.put("msg", "User already exists"));
@@ -51,9 +52,9 @@ public class SecurityController implements ISecurityController {
                 UserDTO user = ctx.bodyAsClass(UserDTO.class);
                 System.out.println("USER IN LOGIN: " + user);
 
-                User verifiedUserEntity = userDAO.verifyUser(user.getUsername(), user.getPassword());
+                User verifiedUserEntity = userDAO.verifyUser(user.getEmail(), user.getPassword());
                 String token = tokenUtil.createToken(new UserDTO(verifiedUserEntity));
-                ctx.status(200).json(new TokenDTO(token, user.getUsername()));
+                ctx.status(200).json(new TokenDTO(token, user.getEmail()));
                 UserDTO userDTO = new UserDTO(verifiedUserEntity);
                 ctx.sessionAttribute("user", userDTO);
             } catch (EntityNotFoundException | ValidationException e) {
@@ -115,11 +116,11 @@ public class SecurityController implements ISecurityController {
 
     public Handler addRoleToUser() {
         return (ctx) -> {
-            String username = ctx.pathParam("username");
+            String email = ctx.pathParam("email");
             String role = ctx.pathParam("role");
             ObjectNode returnObject = objectMapper.createObjectNode();
             try {
-                User user = userDAO.addRoleToUser(username, role);
+                User user = userDAO.addRoleToUser(email, role);
                 ctx.status(HttpStatus.OK).json(new UserDTO(user));
             } catch (EntityNotFoundException e) {
                 ctx.status(HttpStatus.NOT_FOUND);
