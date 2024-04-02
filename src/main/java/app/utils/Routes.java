@@ -24,7 +24,7 @@ public class Routes {
             instance = new Routes();
             securityController = new SecurityController(emf);
             adminController = new AdminController(emf);
-            eventController = new EventController(emf)
+            eventController = new EventController(emf);
         }
         return instance;
     }
@@ -42,7 +42,7 @@ public class Routes {
     public EndpointGroup eventResources() {
         return () -> {
             path("/event", () -> {
-                post("/registerUser" eventController.addUserToEvent(), SecurityRoles.ADMIN);
+                put("/registerUser", eventController.addUserToEvent(), SecurityRoles.ADMIN);
             
             });
         };

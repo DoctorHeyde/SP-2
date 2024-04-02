@@ -9,7 +9,7 @@ import app.entities.User;
 import jakarta.persistence.EntityManagerFactory;
 
 public class EventDAO extends ADAO<Event, EventDTO, Integer> {
-    EntityManagerFactory emf;
+    private static EntityManagerFactory emf;
 
     private static EventDAO instance;
 
@@ -64,5 +64,14 @@ public class EventDAO extends ADAO<Event, EventDTO, Integer> {
     public void update(Event t) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'update'");
+    }
+
+    public static void addUserToEvent(Event event, User user) {
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            event.addUser(user);
+            em.merge(event);
+            em.getTransaction().commit();
+        }
     }
 }

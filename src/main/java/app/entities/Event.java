@@ -94,6 +94,15 @@ public class Event {
 
     }
 
+    public void addUser(User user) {
+        if (user !=null){
+            users.add(user);
+            if(!user.getEvents().contains(this)){
+                user.addEvent(this);
+            }
+        }
+    }
+
 
 
 
