@@ -28,4 +28,11 @@ public class AdminController {
         };
     }
 
+    public Handler getAllEvents() {
+        return ctx -> {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getAllEvents'");
+        };
+    }
+
 }

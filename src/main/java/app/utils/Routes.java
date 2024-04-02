@@ -48,6 +48,7 @@ public class Routes {
             before(securityController.authenticate());
             path("/users", () -> {
                 get(adminController.getAllUsers(), SecurityRoles.ADMIN);
+                get(adminController.getAllEvents(), SecurityRoles.ADMIN);
             });
         };
     }
