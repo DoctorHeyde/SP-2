@@ -20,7 +20,6 @@ import jakarta.persistence.EntityManagerFactory;
 public class SecurityController implements ISecurityController {
     private UserDAO userDAO;
     private ObjectMapper objectMapper = new ObjectMapper();
-    private TokenUtil tokenUtil = new TokenUtil();
 
     public SecurityController(EntityManagerFactory emf) {
         userDAO = UserDAO.getUserDAOInstance(emf);
@@ -35,7 +34,7 @@ public class SecurityController implements ISecurityController {
                 User created = userDAO.createUser(userInput.getEmail(), userInput.getPassword(),
                         userInput.getName(), userInput.getPhoneNumber(), userInput.getRoles());
 
-                String token = tokenUtil.createToken(new UserDTO(created));
+                String token = TokenUtil.createToken(new UserDTO(created));
                 ctx.status(HttpStatus.CREATED).json(new TokenDTO(token, userInput.getEmail()));
             } catch (EntityExistsException e) {
                 ctx.status(HttpStatus.UNPROCESSABLE_CONTENT);
@@ -53,10 +52,8 @@ public class SecurityController implements ISecurityController {
                 System.out.println("USER IN LOGIN: " + user);
 
                 User verifiedUserEntity = userDAO.verifyUser(user.getEmail(), user.getPassword());
-                String token = tokenUtil.createToken(new UserDTO(verifiedUserEntity));
+                String token = TokenUtil.createToken(new UserDTO(verifiedUserEntity));
                 ctx.status(200).json(new TokenDTO(token, user.getEmail()));
-                UserDTO userDTO = new UserDTO(verifiedUserEntity);
-                ctx.sessionAttribute("user", userDTO);
             } catch (EntityNotFoundException | ValidationException e) {
                 ctx.status(401);
                 System.out.println(e.getMessage());
@@ -105,12 +102,12 @@ public class SecurityController implements ISecurityController {
                 ctx.status(HttpStatus.FORBIDDEN).json(returnObject.put("msg", "Authorization header malformed"));
                 return;
             }
-            UserDTO verifiedTokenUser = tokenUtil.verifyToken(token);
+            UserDTO verifiedTokenUser = TokenUtil.verifyToken(token);
             if (verifiedTokenUser == null) {
                 ctx.status(HttpStatus.FORBIDDEN).json(returnObject.put("msg", "Invalid User or Token"));
             }
             System.out.println("USER IN AUTHENTICATE: " + verifiedTokenUser);
-            ctx.sessionAttribute("user", verifiedTokenUser);
+            ctx.attribute("user", verifiedTokenUser);
         };
     }
 

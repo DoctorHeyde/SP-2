@@ -98,4 +98,10 @@ public class UserDAO implements IUserDAO {
         em.close();
         return user;
     }
+
+    public List<User> getAllUsers() {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("From User u", User.class).getResultList();
+        }       
+    }
 }
