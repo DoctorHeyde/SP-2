@@ -80,7 +80,7 @@ public class AdminControllerTests {
     }
 
     @Test
-    public void protectedAdmin() throws JsonMappingException, JsonProcessingException {
+    public void getAllUsers() throws JsonMappingException, JsonProcessingException {
         String requestBody = "{\"username\": \"admin\",\"password\": \"admin\"}";
         Response logingResponse =
             given()
