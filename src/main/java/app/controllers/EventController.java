@@ -1,19 +1,15 @@
 package app.controllers;
 
 import app.persistance.EventDAO;
+import jakarta.persistence.EntityManagerFactory;
 
 public class EventController {
-    EventDAO eventDAO;
-    public static EventController instance;
-    private EventController() {
+    private EntityManagerFactory emf;
+    
+    public EventController(EntityManagerFactory emf) {
+        this.emf = emf;
     }
 
-    public static EventController getInstance(EntityManagerFactory emf) {
-        if (instance == null) {
-            instance = new EventController();
-            instance.eventDAO = EventDAO.getInstance(emf);
-        }
-        return instance;
-    }
+    
 
 }
