@@ -1,0 +1,22 @@
+###
+POST http://localhost:7170/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "finn@email.dk",
+  "password": "1234",
+  "name": "Finn",
+  "phoneNumber": 20623882,
+  "roles": ["user", "instructor"]
+}
+
+
+###
+POST http://localhost:7170/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "finn@email.dk",
+  "password": "1234"
+
+}

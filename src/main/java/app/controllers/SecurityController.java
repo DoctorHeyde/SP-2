@@ -20,7 +20,6 @@ import jakarta.persistence.EntityManagerFactory;
 public class SecurityController implements ISecurityController {
     private UserDAO userDAO;
     private ObjectMapper objectMapper = new ObjectMapper();
-    private TokenUtil tokenUtil = new TokenUtil();
 
     public SecurityController(EntityManagerFactory emf) {
         userDAO = UserDAO.getUserDAOInstance(emf);
@@ -32,10 +31,11 @@ public class SecurityController implements ISecurityController {
             ObjectNode returnObject = objectMapper.createObjectNode();
             try {
                 UserDTO userInput = ctx.bodyAsClass(UserDTO.class);
-                User created = userDAO.createUser(userInput.getUsername(), userInput.getPassword());
+                User created = userDAO.createUser(userInput.getEmail(), userInput.getPassword(),
+                        userInput.getName(), userInput.getPhoneNumber(), userInput.getRoles());
 
-                String token = tokenUtil.createToken(new UserDTO(created));
-                ctx.status(HttpStatus.CREATED).json(new TokenDTO(token, userInput.getUsername()));
+                String token = TokenUtil.createToken(new UserDTO(created));
+                ctx.status(HttpStatus.CREATED).json(new TokenDTO(token, userInput.getEmail()));
             } catch (EntityExistsException e) {
                 ctx.status(HttpStatus.UNPROCESSABLE_CONTENT);
                 ctx.json(returnObject.put("msg", "User already exists"));
@@ -51,11 +51,9 @@ public class SecurityController implements ISecurityController {
                 UserDTO user = ctx.bodyAsClass(UserDTO.class);
                 System.out.println("USER IN LOGIN: " + user);
 
-                User verifiedUserEntity = userDAO.verifyUser(user.getUsername(), user.getPassword());
-                String token = tokenUtil.createToken(new UserDTO(verifiedUserEntity));
-                ctx.status(200).json(new TokenDTO(token, user.getUsername()));
-                UserDTO userDTO = new UserDTO(verifiedUserEntity);
-                ctx.sessionAttribute("user", userDTO);
+                User verifiedUserEntity = userDAO.verifyUser(user.getEmail(), user.getPassword());
+                String token = TokenUtil.createToken(new UserDTO(verifiedUserEntity));
+                ctx.status(200).json(new TokenDTO(token, user.getEmail()));
             } catch (EntityNotFoundException | ValidationException e) {
                 ctx.status(401);
                 System.out.println(e.getMessage());
@@ -104,22 +102,22 @@ public class SecurityController implements ISecurityController {
                 ctx.status(HttpStatus.FORBIDDEN).json(returnObject.put("msg", "Authorization header malformed"));
                 return;
             }
-            UserDTO verifiedTokenUser = tokenUtil.verifyToken(token);
+            UserDTO verifiedTokenUser = TokenUtil.verifyToken(token);
             if (verifiedTokenUser == null) {
                 ctx.status(HttpStatus.FORBIDDEN).json(returnObject.put("msg", "Invalid User or Token"));
             }
             System.out.println("USER IN AUTHENTICATE: " + verifiedTokenUser);
-            ctx.sessionAttribute("user", verifiedTokenUser);
+            ctx.attribute("user", verifiedTokenUser);
         };
     }
 
     public Handler addRoleToUser() {
         return (ctx) -> {
-            String username = ctx.pathParam("username");
+            String email = ctx.pathParam("email");
             String role = ctx.pathParam("role");
             ObjectNode returnObject = objectMapper.createObjectNode();
             try {
-                User user = userDAO.addRoleToUser(username, role);
+                User user = userDAO.addRoleToUser(email, role);
                 ctx.status(HttpStatus.OK).json(new UserDTO(user));
             } catch (EntityNotFoundException e) {
                 ctx.status(HttpStatus.NOT_FOUND);

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import app.entities.Event;
 import app.entities.User;
 import app.entities.Role;
 import app.exceptions.ApiException;
@@ -96,6 +97,8 @@ public class HibernateConfig {
         // add annotated classes
         configuration.addAnnotatedClass(User.class);
         configuration.addAnnotatedClass(Role.class);
+        configuration.addAnnotatedClass(Event.class);
+
     }
 
     private static String getDBName() {

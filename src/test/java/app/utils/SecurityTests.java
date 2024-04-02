@@ -69,7 +69,7 @@ public class SecurityTests {
     
     @Test
     public void defTest(){
-        given().when().get("/").peek().then().statusCode(200);
+        given().when().get("/test/hello").peek().then().statusCode(200);
     }
     
     @Test
@@ -87,7 +87,7 @@ public class SecurityTests {
         String token = body.split(",")[0].split(":")[1].replace("\"", "");
         UserDTO newUser = (TokenUtil.verifyToken(token));
         assertNotNull(newUser);
-        assertEquals("test1", newUser.getUsername());
+        assertEquals("test1", newUser.getEmail());
     }
 
     @Test
