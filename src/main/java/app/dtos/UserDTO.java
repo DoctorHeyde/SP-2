@@ -1,29 +1,42 @@
 package app.dtos;
+import lombok.*;
+import app.entities.Role;
+import app.entities.User;
 
 import java.util.Set;
-
-import app.entities.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class UserDTO {
-    private String username;
+
+    private String email;
     private String password;
+    private String name;
+    private int phoneNumber;
+    @ToString.Exclude
     private Set<String> roles;
 
-    public UserDTO(User user){
-        this.username = user.getUsername();
+    public UserDTO(String email, Set<String> roles) {
+        this.email = email;
+        this.roles = roles;
+    }
+
+    public UserDTO(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
+    public UserDTO(User user) {
+        this.email = user.getEmail();
         this.password = user.getPassword();
-        this.roles    = user.getRolesAsStrings();
+        this.name = user.getName();
+        this.phoneNumber = user.getPhoneNumber();
+        setRoles(user.getRolesAsString());
+
     }
-    public UserDTO(String username, Set<String> roleSet){
-        this.username = username;
-        this.roles    = roleSet;
-    }
+
+
 }

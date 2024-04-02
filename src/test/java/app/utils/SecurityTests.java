@@ -87,7 +87,7 @@ public class SecurityTests {
         String token = body.split(",")[0].split(":")[1].replace("\"", "");
         UserDTO newUser = (TokenUtil.verifyToken(token));
         assertNotNull(newUser);
-        assertEquals("test1", newUser.getUsername());
+        assertEquals("test1", newUser.getEmail());
     }
 
     @Test
