@@ -23,9 +23,9 @@ import app.exceptions.NotAuthorizedException;
 import io.javalin.http.HttpStatus;
 
 public class TokenUtil {
-    private final String SECRET_KEY = "DetteErEnHemmeligNøgleTilAtDanneJWT_Tokensmed";
+    private static final String SECRET_KEY = "DetteErEnHemmeligNøgleTilAtDanneJWT_Tokensmed";
 
-    public String createToken(UserDTO user) {
+    public static String createToken(UserDTO user) {
         String ISSUER;
         String TOKEN_EXPIRE_TIME;
         String SECRET_KEY;
@@ -37,12 +37,12 @@ public class TokenUtil {
         } else {
             ISSUER = "Lauritz Hauge";
             TOKEN_EXPIRE_TIME = "1800000"; // 30 minutes in milliseconds
-            SECRET_KEY = this.SECRET_KEY;
+            SECRET_KEY = TokenUtil.SECRET_KEY;
         }
         return createToken(user, ISSUER, TOKEN_EXPIRE_TIME, SECRET_KEY);
     }
 
-    public String createToken(UserDTO user, String ISSUER, String TOKEN_EXPIRE_TIME, String SECRET_KEY) {
+    public static String createToken(UserDTO user, String ISSUER, String TOKEN_EXPIRE_TIME, String SECRET_KEY) {
         // https://codecurated.com/blog/introduction-to-jwt-jws-jwe-jwa-jwk/
         try {
             JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
@@ -66,12 +66,12 @@ public class TokenUtil {
         }
     }
 
-    public int timeToExpire(String token) throws ParseException, NotAuthorizedException {
+    public static int timeToExpire(String token) throws ParseException, NotAuthorizedException {
         SignedJWT jwt = SignedJWT.parse(token);
         return (int) (jwt.getJWTClaimsSet().getExpirationTime().getTime() - new Date().getTime());
     }
 
-    public UserDTO verifyToken(String token) {
+    public static UserDTO verifyToken(String token) {
         boolean IS_DEPLOYED = (System.getenv("DEPLOYED") != null);
         String SECRET = IS_DEPLOYED ? System.getenv("SECRET_KEY") : SECRET_KEY;
 
@@ -87,7 +87,7 @@ public class TokenUtil {
         }
     }
 
-    public boolean tokenIsValid(String token, String secret)
+    public static boolean tokenIsValid(String token, String secret)
             throws ParseException, JOSEException, NotAuthorizedException {
         SignedJWT jwt = SignedJWT.parse(token);
         if (jwt.verify(new MACVerifier(secret)))
@@ -96,14 +96,14 @@ public class TokenUtil {
             throw new NotAuthorizedException(403, "Token is not valid");
     }
 
-    public boolean tokenNotExpired(String token) throws ParseException, NotAuthorizedException {
+    public static boolean tokenNotExpired(String token) throws ParseException, NotAuthorizedException {
         if (timeToExpire(token) > 0)
             return true;
         else
             throw new NotAuthorizedException(403, "Token has expired");
     }
 
-    public UserDTO getUserWithRolesFromToken(String token) throws ParseException {
+    public static UserDTO getUserWithRolesFromToken(String token) throws ParseException {
         // Return a user with Set of roles as strings
         SignedJWT jwt = SignedJWT.parse(token);
         String roles = jwt.getJWTClaimsSet().getClaim("roles").toString();
