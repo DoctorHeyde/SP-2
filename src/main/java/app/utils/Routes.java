@@ -3,11 +3,16 @@ package app.utils;
 import io.javalin.apibuilder.EndpointGroup;
 import jakarta.persistence.EntityManagerFactory;
 import static io.javalin.apibuilder.ApiBuilder.*;
+
+import org.eclipse.jetty.io.EndPoint;
+
+import app.controllers.AdminController;
 import app.controllers.SecurityController;
 
 public class Routes {
     private static Routes instance;
     private static SecurityController securityController;
+    private static AdminController adminController;
     private Routes() {
     }
 
@@ -15,6 +20,7 @@ public class Routes {
         if (instance == null) {
             instance = new Routes();
             securityController = new SecurityController(emf);
+            adminController = new AdminController(emf);
         }
         return instance;
     }
@@ -33,6 +39,14 @@ public class Routes {
         return () -> {
             path("/test", () -> {
                 get("/hello", ctx -> ctx.result("Hello World!"), SecurityRoles.ANYONE);
+            });
+        };
+    }
+
+    public EndpointGroup securedRoutes() {
+        return () -> {
+            path("/users", () -> {
+                get(adminController.getAllUsers(), SecurityRoles.ADMIN);
             });
         };
     }
