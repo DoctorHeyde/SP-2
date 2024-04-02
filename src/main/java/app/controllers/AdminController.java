@@ -23,6 +23,7 @@ public class AdminController {
     public Handler getAllUsers() {
         return ctx -> {
             String json = objectMapper.writeValueAsString(userDAO.getAllUsers().stream().map(u -> new UserDTO(u)).collect(Collectors.toList()));
+            System.out.println(json);
             ctx.status(HttpStatus.OK).json(json);
         };
     }

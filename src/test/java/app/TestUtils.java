@@ -19,8 +19,8 @@ public class TestUtils {
             em.createQuery("DELETE FROM User u").executeUpdate();
             em.createQuery("DELETE FROM Role r").executeUpdate();
             
-            User u1 = new User("admin", "admin");
-            User u2 = new User("user", "user");
+            User u1 = new User("admin", "admin", "admin", 10);
+            User u2 = new User("user", "user", "user", 10);
 
             Role r1 = new Role("admin");
             Role r2 = new Role("user");
@@ -37,6 +37,6 @@ public class TestUtils {
         }
     }    
     public static Map<String, User> getUsers(EntityManagerFactory emfTest) {
-        return UserDAO.getUserDAOInstance(emfTest).getAllUsers().stream().collect(Collectors.toMap(u -> u.getUsername(), u -> u));
+        return UserDAO.getUserDAOInstance(emfTest).getAllUsers().stream().collect(Collectors.toMap(u -> u.getEmail(), u -> u));
     }
 }

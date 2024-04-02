@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.mindrot.jbcrypt.BCrypt;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,8 +34,9 @@ public class User {
     @ToString.Exclude
     private Set<Event> events = new HashSet<>();
 
-    @ManyToMany
     @ToString.Exclude
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JsonManagedReference
     private Set<Role> roles = new HashSet<>();
 
 

@@ -81,7 +81,7 @@ public class AdminControllerTests {
 
     @Test
     public void getAllUsers() throws JsonMappingException, JsonProcessingException {
-        String requestBody = "{\"username\": \"admin\",\"password\": \"admin\"}";
+        String requestBody = "{\"email\": \"admin\",\"password\": \"admin\"}";
         Response logingResponse =
             given()
                 .body(requestBody)
@@ -95,11 +95,13 @@ public class AdminControllerTests {
             .header(header)
         .when()
             .get("/users")
+            .peek()
             ;
+        
         UserDTO[] users = objectMapper.readValue(getResponse.asString(), UserDTO[].class);
         Map<String,User> allUsers = TestUtils.getUsers(emfTest);
         for(UserDTO user : users){
-            assertEquals(user.getUsername(), allUsers.get(user.getUsername()).getUsername());
+            assertEquals(user.getEmail(), allUsers.get(user.getEmail()).getEmail());
         }
     }    
 }

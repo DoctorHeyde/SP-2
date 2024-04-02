@@ -88,6 +88,7 @@ public class ApplicationConfig {
     public ApplicationConfig setExceptionHandling() {
         app.exception(Exception.class, (e, ctx) -> {
             System.out.println(ctx.body());
+            e.printStackTrace();
             ObjectNode node = om.createObjectNode().put("errorMessage", e.getMessage());
             ctx.status(500).json(node);
         });
