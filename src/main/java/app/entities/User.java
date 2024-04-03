@@ -30,7 +30,7 @@ public class User {
     private int phoneNumber;
 
 
-    @ManyToMany (mappedBy = "users")
+    @ManyToMany (mappedBy = "users", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @ToString.Exclude
     private Set<Event> events = new HashSet<>();
 

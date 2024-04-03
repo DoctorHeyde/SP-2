@@ -14,7 +14,6 @@ import app.dtos.TokenDTO;
 import app.utils.Routes;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
-import io.restassured.response.Response;
 import jakarta.persistence.EntityManagerFactory;
 
 public class EventControllerTests {
@@ -38,6 +37,7 @@ public class EventControllerTests {
                 .initiateServer()
                 .setExceptionHandling()
                 .checkSecurityRoles()
+                .setRoute(routes.eventResources())
                 .setRoute(routes.testResources())
                 .setRoute(routes.securityResources()) 
                 .setRoute(routes.securedRoutes())               
@@ -72,10 +72,9 @@ public class EventControllerTests {
                 .extract()
                 .as(TokenDTO.class);
 
-        Header header = new Header("Authorization", "Bearer " + token.getToken());
-        
+        Header header = new Header("Authorization", "Bearer " + token.getToken());        
 
-        String requestBody = "{\"password\": \"user\",\"title\": \"title1\"}";
+        String requestBody = "{\"email\": \"user\",\"id\": \"1\"}";
         RestAssured.given()
             .contentType("application/json")
             .header(header)
@@ -84,6 +83,5 @@ public class EventControllerTests {
             .put("/event/registerUser")
             .then()
             .statusCode(200);
-
     }
 }

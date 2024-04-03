@@ -20,7 +20,7 @@ public class Event {
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     private String title;
 
     private String startTime;
@@ -55,7 +55,7 @@ public class Event {
 
     private LocalDateTime canceledAt;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @ToString.Exclude
     private Set<User> users = new HashSet<>();
 

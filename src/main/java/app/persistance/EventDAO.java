@@ -47,9 +47,10 @@ public class EventDAO extends ADAO<Event, Integer> {
     }
 
     @Override
-    public Event getByID(Integer i) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getByID'");
+    public Event getByID(Integer id) {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.find(Event.class, id);
+        }
     }
 
     @Override
