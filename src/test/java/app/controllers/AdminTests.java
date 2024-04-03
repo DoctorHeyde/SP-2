@@ -35,7 +35,7 @@ import app.config.ApplicationConfig;
 import static io.restassured.RestAssured.*;
 import jakarta.persistence.EntityManagerFactory;
 
-public class AdminControllerTests {
+public class AdminTests {
     private static ApplicationConfig appConfig;
     private static final String BASE_URL = "http://localhost:7777/api";
     private static EntityManagerFactory emfTest;
