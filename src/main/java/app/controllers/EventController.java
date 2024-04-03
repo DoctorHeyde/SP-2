@@ -33,7 +33,7 @@ public class EventController {
             List<Event> upComing = eventDAO.getUpcomingEvent();
 
             List<EventDTO> upComingAsDTO = upComing.stream()
-                    .map(event -> new EventDTO(event.getTitle())).collect(Collectors.toList());
+                    .map(event -> new EventDTO(event.getTitle(), event.getDateOfEvent().toString())).collect(Collectors.toList());
 
             ctx.status(200).json(upComingAsDTO);
         };
