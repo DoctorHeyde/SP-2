@@ -3,7 +3,7 @@ package app.persistance;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
-public abstract class ADAO<T, DTO, ID> implements IDAO<T, DTO, ID> {
+public abstract class ADAO<T, ID> implements IDAO<T, ID> {
 
     protected static EntityManagerFactory emf;
 

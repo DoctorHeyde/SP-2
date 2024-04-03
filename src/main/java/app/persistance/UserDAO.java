@@ -27,6 +27,8 @@ public class UserDAO implements IUserDAO {
         return instance;
     }
 
+
+
     @Override
     public User createUser(String email, String password, String name, int phoneNumber, Set<String> roles) {
 
@@ -103,5 +105,11 @@ public class UserDAO implements IUserDAO {
         try (EntityManager em = emf.createEntityManager()) {
             return em.createQuery("From User u", User.class).getResultList();
         }       
+    }
+
+    public User getByID(String id) {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.find(User.class, id);
+        }
     }
 }

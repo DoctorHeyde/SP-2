@@ -1,5 +1,6 @@
 package app.controllers;
 
+import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,15 +15,16 @@ import app.TestUtils;
 import app.config.ApplicationConfig;
 import app.config.HibernateConfig;
 import app.dtos.EventDTO;
+import app.dtos.TokenDTO;
 import app.entities.Event;
 import app.utils.Routes;
 import io.restassured.RestAssured;
+import io.restassured.http.Header;
 import io.restassured.response.Response;
-import static io.restassured.RestAssured.*;
 import jakarta.persistence.EntityManagerFactory;
 
 public class EventControllerTests {
-    private static ApplicationConfig appConfig;
+        private static ApplicationConfig appConfig;
     private static final String BASE_URL = "http://localhost:7777/api";
     private static EntityManagerFactory emfTest;
     private static ObjectMapper objectMapper = new ObjectMapper();
@@ -42,7 +44,10 @@ public class EventControllerTests {
                 .initiateServer()
                 .setExceptionHandling()
                 .checkSecurityRoles()
-                .setRoute(routes.unsecuredRoutes())               
+                .setRoute(routes.eventResources())
+                .setRoute(routes.testResources())
+                .setRoute(routes.securityResources()) 
+                .setRoute(routes.securedRoutes())               
                 .startServer(7777)
             ;
     }
@@ -72,4 +77,31 @@ public class EventControllerTests {
 
         assertEquals(first.getTitle(), actualEvent.getTitle());
     }    
+
+    
+    @Test
+    void registerUserToEvent() {
+        String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
+        TokenDTO token = RestAssured
+            .given()
+            .contentType("application/json")
+                .body(requestLoginBody)
+            .when()
+                .post("/auth/login")
+                .then()
+                .extract()
+                .as(TokenDTO.class);
+
+        Header header = new Header("Authorization", "Bearer " + token.getToken());        
+
+        String requestBody = "{\"email\": \"user\",\"id\": \"1\"}";
+        RestAssured.given()
+            .contentType("application/json")
+            .header(header)
+            .body(requestBody)
+            .when()
+            .put("/event/registerUser")
+            .then()
+            .statusCode(200);
+    }
 }

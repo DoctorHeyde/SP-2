@@ -38,6 +38,15 @@ public class Routes {
         };
     }
 
+    public EndpointGroup eventResources() {
+        return () -> {
+            path("/event", () -> {
+                put("/registerUser", eventController.addUserToEvent(), SecurityRoles.USER);
+            
+            });
+        };
+    }
+
     public EndpointGroup testResources() {
         return () -> {
             path("/test", () -> {
