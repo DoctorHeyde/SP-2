@@ -49,6 +49,7 @@ public class TokenUtil {
                     .subject(user.getEmail())
                     .issuer(ISSUER)
                     .claim("email", user.getEmail())
+                    .claim("name", user.getName())
                     .claim("roles", user.getRoles().stream().reduce("", (s1, s2) -> s1 + "," + s2))
                     .expirationTime(new Date(new Date().getTime() + Integer.parseInt(TOKEN_EXPIRE_TIME)))
                     .build();
@@ -107,11 +108,12 @@ public class TokenUtil {
         // Return a user with Set of roles as strings
         SignedJWT jwt = SignedJWT.parse(token);
         String roles = jwt.getJWTClaimsSet().getClaim("roles").toString();
+        String name = jwt.getJWTClaimsSet().getClaim("name").toString();
         String email = jwt.getJWTClaimsSet().getClaim("email").toString();
 
         Set<String> rolesSet = Arrays
                 .stream(roles.split(","))
                 .collect(Collectors.toSet());
-        return new UserDTO(email, rolesSet);
+        return new UserDTO(email, name, rolesSet);
     }
 }

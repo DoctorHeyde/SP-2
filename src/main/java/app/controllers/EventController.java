@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import app.dtos.EventDTO;
+import app.dtos.UserDTO;
 import app.entities.Event;
 import app.entities.User;
 import app.persistance.EventDAO;
@@ -42,12 +43,31 @@ public class EventController {
 
     public Handler getAllEvents() {
         return ctx -> {
-            String json = objectMapper.writeValueAsString(eventDAO.getAllEvents().stream().map(e -> new EventDTO(e.getTitle())).collect(Collectors.toList()));
-            System.out.println(json);
-            ctx.status(HttpStatus.OK).json(json);
+
+            UserDTO user = ctx.attribute("user");
+            List<Event> events = eventDAO.getAllEvents();
+            if(user.hasRole("ADMIN")){
+                String json = objectMapper.writeValueAsString(events.stream().map(e -> new EventDTO(e)).collect(Collectors.toList()));
+                System.out.println(json);
+                ctx.status(HttpStatus.OK).json(json);
+            }
+            if(user.hasRole("INSTRUCTOR")){
+                List<EventDTO> eventDTOs = events.stream().filter(e -> e.getInstructor().equalsIgnoreCase(user.getName())).map(e -> new EventDTO(e)).collect(Collectors.toList());
+                String json = objectMapper.writeValueAsString(eventDTOs);
+                System.out.println(json);
+                ctx.status(HttpStatus.OK).json(json);
+            }
         };
     }
 
+    public Handler getEventById(){
+        return ctx -> {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            EventDTO eventDTO = new EventDTO(eventDAO.getEventById(id));
+            String json = objectMapper.writeValueAsString(eventDTO);
+            ctx.status(HttpStatus.OK).json(json);
+        };
+    }
 
     public Handler getUpcomingEvents() {
         return ctx -> {
@@ -59,4 +79,6 @@ public class EventController {
             ctx.status(200).json(upComingAsDTO);
         };
     }
+
 }
+

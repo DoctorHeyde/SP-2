@@ -72,8 +72,14 @@ public class Routes {
             });
             before(securityController.authenticate());
             path("/events", () -> {
-                get(eventController.getAllEvents(), SecurityRoles.ADMIN);
+                get(eventController.getAllEvents(), SecurityRoles.ADMIN, SecurityRoles.INSTRUCTOR);
             });
+        };
+    }
+
+    public EndpointGroup unsecuredRoutes(){
+        return () -> {
+            get("/events/{id}", eventController.getEventById(), SecurityRoles.ANYONE);
         };
     }
 }
