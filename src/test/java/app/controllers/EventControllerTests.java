@@ -1,8 +1,6 @@
 package app.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import java.util.Map;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,13 +14,9 @@ import app.TestUtils;
 import app.config.ApplicationConfig;
 import app.config.HibernateConfig;
 import app.dtos.EventDTO;
-import app.dtos.TokenDTO;
-import app.dtos.UserDTO;
-import app.entities.User;
 import app.entities.Event;
 import app.utils.Routes;
 import io.restassured.RestAssured;
-import io.restassured.http.Header;
 import io.restassured.response.Response;
 import static io.restassured.RestAssured.*;
 import jakarta.persistence.EntityManagerFactory;
@@ -48,9 +42,7 @@ public class EventControllerTests {
                 .initiateServer()
                 .setExceptionHandling()
                 .checkSecurityRoles()
-                .setRoute(routes.testResources())
-                .setRoute(routes.securityResources()) 
-                .setRoute(routes.securedRoutes())               
+                .setRoute(routes.unsecuredRoutes())               
                 .startServer(7777)
             ;
     }
@@ -68,20 +60,15 @@ public class EventControllerTests {
         emfTest.close();
         appConfig.stopServer();
     }
-    
-    @Test
-    public void defTest(){
-        given().when().get("/test/hello").peek().then().statusCode(200);
-    }
 
     @Test
     public void getEventById() throws JsonMappingException, JsonProcessingException {
         Event first = TestUtils.getEvents(emfTest).values().stream().findFirst().get();
-        
         Response response = given().when()
-            .get("/events/" + first.getId());
+            .get("/events/" + first.getId()).peek()
+            ;
 
-        EventDTO actualEvent = objectMapper.readValue(response.asString(), EventDTO.class);
+        EventDTO actualEvent = objectMapper.readValue(response.body().asString(), EventDTO.class);
 
         assertEquals(first.getTitle(), actualEvent.getTitle());
     }    

@@ -27,4 +27,10 @@ public class EventDAO {
             return em.createQuery("From Event e", Event.class).getResultList();
         }       
     }
+
+    public Event getEventById(int id) {
+        try(EntityManager em = emf.createEntityManager()){
+            return em.find(Event.class, id);
+        }
+    }
 }
