@@ -11,13 +11,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import app.TestUtils;
 import app.config.ApplicationConfig;
 import app.config.HibernateConfig;
 import app.dtos.EventDTO;
 import app.dtos.TokenDTO;
 import app.entities.Event;
 import app.utils.Routes;
+import app.utils.TestUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
