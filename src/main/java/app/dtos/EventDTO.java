@@ -18,10 +18,12 @@ import lombok.ToString;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
- 
+
+
+import java.time.LocalDate;
 
 @Getter
-@Setter 
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
@@ -45,7 +47,18 @@ public class EventDTO {
     private String canceledAt;
     private Set<UserDTO> users;
 
+    public EventDTO(String title) {
+        this.title = title;
+    }
+
+    public EventDTO(String title, String dateOfEvent) {
+        this.title = title;
+        this.dateOfEvent = dateOfEvent;
+
+    }
+
     public EventDTO(Event event) {
+
         this.id = event.getId();
         this.title = event.getTitle();
         this.startTime = event.getStartTime();
@@ -60,8 +73,10 @@ public class EventDTO {
         this.image = event.getImage();
         this.status = event.getStatus();
         this.users = event.getUsers().stream().map(u -> new UserDTO(u)).collect(Collectors.toSet());
-        if(event.getCreatedAt() != null) this.createdAt = event.getCreatedAt().toString();
-        if(event.getUpdatedAt() != null) this.updatedAt = event.getUpdatedAt().toString();
-        if(event.getCanceledAt() != null) this.canceledAt = event.getCanceledAt().toString();
+
+        if (event.getCreatedAt() != null) this.createdAt = event.getCreatedAt().toString();
+        if (event.getUpdatedAt() != null) this.updatedAt = event.getUpdatedAt().toString();
+        if (event.getCanceledAt() != null) this.canceledAt = event.getCanceledAt().toString();
     }
 }
+

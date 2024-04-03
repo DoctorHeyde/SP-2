@@ -43,6 +43,7 @@ public class EventController {
 
     public Handler getAllEvents() {
         return ctx -> {
+
             UserDTO user = ctx.attribute("user");
             List<Event> events = eventDAO.getAllEvents();
             if(user.hasRole("ADMIN")){
@@ -80,5 +81,16 @@ public class EventController {
             EventDAO.cancelRegistration(eventObj, user);
         };
     }
+    public Handler getUpcomingEvents() {
+        return ctx -> {
+            List<Event> upComing = eventDAO.getUpcomingEvent();
+
+            List<EventDTO> upComingAsDTO = upComing.stream()
+                    .map(event -> new EventDTO(event.getTitle(), event.getDateOfEvent().toString())).collect(Collectors.toList());
+
+            ctx.status(200).json(upComingAsDTO);
+        };
+    }
+
 }
 

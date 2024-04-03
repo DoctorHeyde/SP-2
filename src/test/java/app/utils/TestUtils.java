@@ -54,10 +54,14 @@ public class TestUtils {
             em.createQuery("DELETE FROM Event e").executeUpdate();
             
             Event e1 = new Event("title1", "startTime", "description", LocalDate.now(), 100, 10, "locationOfEvent", "instructor", 100d, "category", "image", Status.ACTIVE);
-            Event e2 = new Event("title2", "startTime", "description", LocalDate.now(), 100, 10, "locationOfEvent", "instructor2", 100d, "category", "image", Status.ACTIVE);
-            
+            Event e2 = new Event("title2", "startTime", "description", LocalDate.now(), 100, 10, "locationOfEvent", "instructor", 100d, "category", "image", Status.ACTIVE);
+            Event e3 = new Event("title3", "startTime", "description", LocalDate.of(2024, 04, 22), 100, 10, "locationOfEvent", "instructor", 100d, "category", "image", Status.UPCOMING);
+            Event e4 = new Event("title4", "startTime", "description", LocalDate.of(2024, 04, 29), 100, 10, "locationOfEvent", "instructor", 100d, "category", "image", Status.UPCOMING);
+
             em.persist(e1);
             em.persist(e2);
+            em.persist(e3);
+            em.persist(e4);
             em.getTransaction().commit();
         }
     }
