@@ -92,5 +92,20 @@ public class EventController {
         };
     }
 
+    public Handler updateEvent() {
+
+        return ctx ->{
+
+            int id = Integer.parseInt(ctx.pathParam("id"));
+
+            EventDTO updatedEventAsDTO = ctx.bodyAsClass(EventDTO.class);
+
+            Event updatedEvent = new Event(updatedEventAsDTO);
+            updatedEvent.setId(id);
+            Event updatedEventNowInDB = eventDAO.updateEvent(updatedEvent);
+
+            ctx.status(201).json("Event after update: " + updatedEventNowInDB);
+        };
+    }
 }
 
