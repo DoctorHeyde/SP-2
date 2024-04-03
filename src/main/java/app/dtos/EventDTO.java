@@ -1,5 +1,6 @@
 package app.dtos;
 
+import app.entities.Event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

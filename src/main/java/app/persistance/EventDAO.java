@@ -24,48 +24,6 @@ public class EventDAO extends ADAO<Event, EventDTO, Integer> {
         return instance;
     }
 
-    @Override
-    public List<EventDTO> getAll() {
-        // try (var em = emf.createEntityManager()) {
-        //     var query = em.createQuery("SELECT e FROM Event e", Event.class);
-        //     List<Event> events = query.getResultList();
-        //     List<EventDTO> eventDTOs = events.stream()
-        //             .map(event -> new EventDTO(
-        //                     event.getId(),
-        //                     event.getTitle(),
-        //                     event.getStartTime(),
-        //                     event.getDescription(),
-        //                     event.getDateOfEvent().toString(),
-        //                     event.getDurationInHours(),
-        //                     event.getMaxNumberOfStudents(),
-        //                     event.getLocationOfEvent(),
-        //                     event.getInstructor(),
-        //                     event.getPrice(),
-        //                     event.getCategory(),
-        //                     event.getImage(),
-        //                     event.getStatus().toString(),
-        //                     event.getCreatedAt().toString(),
-        //                     event.getUpdatedAt().toString(),
-        //                     event.getCanceledAt() != null ? event.getCanceledAt().toString() : null,
-        //                     event.getUsers().stream().map(User::getEmail).collect(Collectors.joining(", "))))
-        //             .collect(Collectors.toList());
-        //     return eventDTOs;
-        // }
-        return null;
-    }
-
-    @Override
-    public Event getByID(Integer i) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getByID'");
-    }
-
-    @Override
-    public void update(Event t) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
-    }
-
     public static void addUserToEvent(Event event, User user) {
         try (var em = emf.createEntityManager()) {
             em.getTransaction().begin();
@@ -73,5 +31,11 @@ public class EventDAO extends ADAO<Event, EventDTO, Integer> {
             em.merge(event);
             em.getTransaction().commit();
         }
+    }
+
+    public List<Event> getAllEvents() {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("From Event e", Event.class).getResultList();
+        }     
     }
 }
