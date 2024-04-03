@@ -39,4 +39,11 @@ public class EventController {
             ctx.status(HttpStatus.OK).json(json);
         };
     }
+
+    public Handler createEvent(){
+        return ctx -> {
+            Event event = ctx.bodyAsClass(Event.class);
+            eventDAO.create(event);
+        };
+    }
 }
