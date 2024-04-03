@@ -12,9 +12,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EventDTO {
     private String title;
+    private String instructor;
+
 
     public EventDTO(Event event){
         title = event.getTitle();
+        instructor = event.getInstructor();
     }
 
 }

@@ -6,7 +6,6 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 
 import org.eclipse.jetty.io.EndPoint;
 
-import app.controllers.AdminController;
 import app.controllers.EventController;
 import app.controllers.SecurityController;
 import app.controllers.UserController;
@@ -55,7 +54,7 @@ public class Routes {
             });
             before(securityController.authenticate());
             path("/events", () -> {
-                get(eventController.getAllEvents(), SecurityRoles.ADMIN);
+                get(eventController.getAllEvents(), SecurityRoles.ADMIN, SecurityRoles.INSTRUCTOR);
             });
         };
     }

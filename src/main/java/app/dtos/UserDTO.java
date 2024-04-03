@@ -28,6 +28,11 @@ public class UserDTO {
         this.email = email;
         this.password = password;
     }
+    public UserDTO(String email, String name, Set<String> roles) {
+        this.email = email;
+        this.name = name;
+        this.roles = roles;
+    }
 
     public UserDTO(User user) {
         this.email = user.getEmail();
@@ -36,6 +41,11 @@ public class UserDTO {
         this.phoneNumber = user.getPhoneNumber();
         setRoles(user.getRolesAsString());
 
+    }
+
+    public boolean hasRole(String role) {
+        //This is to make make all letter cases work, this culd be simplere iff the stat of both strings are known
+        return roles.stream().map(r -> r.equalsIgnoreCase(role)).reduce(false, (acc, r) -> acc = acc || r);
     }
 
 

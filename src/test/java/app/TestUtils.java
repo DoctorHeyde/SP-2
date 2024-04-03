@@ -23,18 +23,23 @@ public class TestUtils {
             em.createQuery("DELETE FROM Role r").executeUpdate();
             
             User u1 = new User("admin", "admin", "admin", 10);
-            User u2 = new User("user", "user", "user", 10);
+            User u2 = new User("instructor", "instructor", "instructor", 10);
+            User u3 = new User("user", "user", "user", 10);
 
             Role r1 = new Role("admin");
-            Role r2 = new Role("user");
+            Role r2 = new Role("instructor");
+            Role r3 = new Role("user");
 
             u1.addRole(r1);
             u2.addRole(r2);
+            u3.addRole(r3);
                 
             em.persist(u1);
             em.persist(u2);
+            em.persist(u3);
             em.persist(r1);
             em.persist(r2);
+            em.persist(r3);
             
             em.getTransaction().commit();
         }
@@ -48,7 +53,7 @@ public class TestUtils {
             em.createQuery("DELETE FROM Event e").executeUpdate();
             
             Event e1 = new Event("title1", "startTime", "description", LocalDate.now(), 100, 10, "locationOfEvent", "instructor", 100d, "category", "image", Status.ACTIVE);
-            Event e2 = new Event("title2", "startTime", "description", LocalDate.now(), 100, 10, "locationOfEvent", "instructor", 100d, "category", "image", Status.ACTIVE);
+            Event e2 = new Event("title2", "startTime", "description", LocalDate.now(), 100, 10, "locationOfEvent", "instructor2", 100d, "category", "image", Status.ACTIVE);
             
             em.persist(e1);
             em.persist(e2);
