@@ -7,12 +7,15 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 import org.eclipse.jetty.io.EndPoint;
 
 import app.controllers.AdminController;
+import app.controllers.EventController;
 import app.controllers.SecurityController;
+import app.controllers.UserController;
 
 public class Routes {
     private static Routes instance;
     private static SecurityController securityController;
-    private static AdminController adminController;
+    private static UserController userController;
+    private static EventController eventController;
     private Routes() {
     }
 
@@ -20,7 +23,8 @@ public class Routes {
         if (instance == null) {
             instance = new Routes();
             securityController = new SecurityController(emf);
-            adminController = new AdminController(emf);
+            userController = new UserController(emf);
+            eventController = new EventController(emf);
         }
         return instance;
     }
@@ -47,7 +51,11 @@ public class Routes {
         return () -> {
             before(securityController.authenticate());
             path("/users", () -> {
-                get(adminController.getAllUsers(), SecurityRoles.ADMIN);
+                get(userController.getAllUsers(), SecurityRoles.ADMIN);
+            });
+            before(securityController.authenticate());
+            path("/events", () -> {
+                get(eventController.getAllEvents(), SecurityRoles.ADMIN);
             });
         };
     }

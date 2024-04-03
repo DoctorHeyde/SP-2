@@ -19,8 +19,10 @@ import app.TestUtils;
 import app.config.ApplicationConfig;
 import app.config.HibernateConfig;
 import app.controllers.SecurityController;
+import app.dtos.EventDTO;
 import app.dtos.TokenDTO;
 import app.dtos.UserDTO;
+import app.entities.Event;
 import app.entities.User;
 import app.persistance.UserDAO;
 import app.utils.Routes;
@@ -33,7 +35,7 @@ import app.config.ApplicationConfig;
 import static io.restassured.RestAssured.*;
 import jakarta.persistence.EntityManagerFactory;
 
-public class AdminControllerTests {
+public class AdminTests {
     private static ApplicationConfig appConfig;
     private static final String BASE_URL = "http://localhost:7777/api";
     private static EntityManagerFactory emfTest;
@@ -65,6 +67,7 @@ public class AdminControllerTests {
     public void setUpEach() {
         // Setup test database for each test
         TestUtils.createUsersAndRoles(emfTest);
+        TestUtils.createEvents(emfTest);
         
     }
     
@@ -95,13 +98,37 @@ public class AdminControllerTests {
             .header(header)
         .when()
             .get("/users")
-            .peek()
             ;
         
         UserDTO[] users = objectMapper.readValue(getResponse.asString(), UserDTO[].class);
         Map<String,User> allUsers = TestUtils.getUsers(emfTest);
         for(UserDTO user : users){
             assertEquals(user.getEmail(), allUsers.get(user.getEmail()).getEmail());
+        }
+    }    
+
+    @Test
+    public void getAllEvents() throws JsonMappingException, JsonProcessingException {
+        String requestBody = "{\"email\": \"admin\",\"password\": \"admin\"}";
+        Response logingResponse =
+            given()
+                .body(requestBody)
+            .when()
+                .post("/auth/login");
+
+        TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
+        
+        Response getResponse = given()
+            .header(header)
+        .when()
+            .get("/events")
+            ;
+        
+        EventDTO[] events = objectMapper.readValue(getResponse.asString(), EventDTO[].class);
+        Map<String,Event> allUsers = TestUtils.getEvents(emfTest);
+        for(EventDTO event : events){
+            assertEquals(event.getTitle(), allUsers.get(event.getTitle()).getTitle());
         }
     }    
 }
