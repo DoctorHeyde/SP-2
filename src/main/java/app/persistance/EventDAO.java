@@ -67,11 +67,6 @@ public class EventDAO extends ADAO<Event, Integer> {
 
             Event event = new Event(title, startTime, description, dateOfEvent, durationInHours, maxNumberOfStudents, locationOfEvent, instructor, price, category, image, status);
 
-//            for (String role : roles){
-//                Role instructorRole = em.find(Role.class, role);
-//                user.addRole(instructorRole);
-//            }
-
             em.persist(event);
             em.getTransaction().commit();
             em.close();
