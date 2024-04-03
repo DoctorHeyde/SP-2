@@ -1,11 +1,12 @@
 package app.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalDateTime; 
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public class Event {
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     private String title;
 
     private String startTime;
@@ -57,8 +58,9 @@ public class Event {
 
     private LocalDateTime canceledAt;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @ToString.Exclude
+    @JsonManagedReference
     private Set<User> users = new HashSet<>();
 
 
@@ -95,9 +97,18 @@ public class Event {
         }
     }
 
-    public void addUser(User user){
-        users.add(user);
+    public void removeUser(User user) {
+        users.remove(user);
+        user.getEvents().remove(this);
+    }
 
+    public void addUser(User user) {
+        if (user !=null){
+            users.add(user);
+            if(!user.getEvents().contains(this)){
+                user.addEvent(this);
+            }
+        }
     }
 
 

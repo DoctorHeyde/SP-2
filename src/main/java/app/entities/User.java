@@ -1,6 +1,7 @@
 package app.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.mindrot.jbcrypt.BCrypt;
@@ -30,8 +31,9 @@ public class User {
     private int phoneNumber;
 
 
-    @ManyToMany (mappedBy = "users")
+    @ManyToMany (mappedBy = "users", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @ToString.Exclude
+    @JsonBackReference
     private Set<Event> events = new HashSet<>();
 
     @ToString.Exclude
@@ -74,5 +76,15 @@ public class User {
     public void removeRole(Role role) {
         roles.remove(role);
         role.getUsers().remove(this);
+    }
+
+
+    public void addEvent(Event event) {
+        if(event != null){
+            events.add(event);
+            if(!event.getUsers().contains(this)){
+                event.addUser(this);
+            }
+        }
     }
 }
