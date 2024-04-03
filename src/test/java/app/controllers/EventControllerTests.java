@@ -1,19 +1,26 @@
 package app.controllers;
 
+import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import app.config.ApplicationConfig;
 import app.config.HibernateConfig;
+import app.dtos.EventDTO;
 import app.dtos.TokenDTO;
+import app.entities.Event;
 import app.utils.Routes;
 import app.utils.TestUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
+import io.restassured.response.Response;
 import jakarta.persistence.EntityManagerFactory;
 
 public class EventControllerTests {
@@ -58,6 +65,19 @@ public class EventControllerTests {
         emfTest.close();
         appConfig.stopServer();
     }
+
+    @Test
+    public void getEventById() throws JsonMappingException, JsonProcessingException {
+        Event first = TestUtils.getEvents(emfTest).values().stream().findFirst().get();
+        Response response = given().when()
+            .get("/events/" + first.getId()).peek()
+            ;
+
+        EventDTO actualEvent = objectMapper.readValue(response.body().asString(), EventDTO.class);
+
+        assertEquals(first.getTitle(), actualEvent.getTitle());
+    }    
+
     
     @Test
     void registerUserToEvent() {
