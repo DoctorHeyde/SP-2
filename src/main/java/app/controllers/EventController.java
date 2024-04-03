@@ -68,5 +68,17 @@ public class EventController {
         };
     }
 
+    public Handler cancelRegistration() {
+        return ctx -> {
+            String jsonBody = ctx.body();
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(jsonBody);
+            String email = jsonNode.get("email").asText();
+            Integer eventID = jsonNode.get("id").asInt();
+            User user = userDAO.getByID(email);
+            Event eventObj = eventDAO.getByID(eventID);
+            EventDAO.cancelRegistration(eventObj, user);
+        };
+    }
 }
 
