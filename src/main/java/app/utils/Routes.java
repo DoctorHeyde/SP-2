@@ -4,8 +4,6 @@ import io.javalin.apibuilder.EndpointGroup;
 import jakarta.persistence.EntityManagerFactory;
 import static io.javalin.apibuilder.ApiBuilder.*;
 
-import org.eclipse.jetty.io.EndPoint;
-
 import app.controllers.EventController;
 import app.controllers.SecurityController;
 import app.controllers.UserController;
@@ -42,6 +40,7 @@ public class Routes {
         return () -> {
             path("/event", () -> {
                 put("/registerUser", eventController.addUserToEvent(), SecurityRoles.USER);
+                get("/upcoming", eventController.getUpcomingEvents(), SecurityRoles.ANYONE);
             
             });
         };
@@ -54,6 +53,16 @@ public class Routes {
             });
         };
     }
+/*
+    public EndpointGroup eventResourcesRoutes() {
+        return () -> {
+            path("/event", () -> {
+
+            });
+        };
+    }
+
+ */
 
     public EndpointGroup securedRoutes() {
         return () -> {

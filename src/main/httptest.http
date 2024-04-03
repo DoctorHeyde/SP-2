@@ -20,3 +20,6 @@ Content-Type: application/json
   "password": "1234"
 
 }
+
+###
+GET http://localhost:7170/api/event/upcoming

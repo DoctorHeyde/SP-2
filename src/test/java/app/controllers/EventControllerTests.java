@@ -23,20 +23,29 @@ import io.restassured.http.Header;
 import io.restassured.response.Response;
 import jakarta.persistence.EntityManagerFactory;
 
+
+import java.time.LocalDate;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.matchesPattern;
+
 public class EventControllerTests {
-        private static ApplicationConfig appConfig;
+    private static ApplicationConfig appConfig;
     private static final String BASE_URL = "http://localhost:7777/api";
     private static EntityManagerFactory emfTest;
     private static ObjectMapper objectMapper = new ObjectMapper();
-    
+
     @BeforeAll
-    public static void beforeAll(){
+    public static void beforeAll() {
         RestAssured.baseURI = BASE_URL;
         objectMapper.findAndRegisterModules();
-        
+
         // Setup test database using docker testcontainers
         emfTest = HibernateConfig.getEntityManagerFactory(true);
-        
+
         Routes routes = Routes.getInstance(emfTest);
         // Start server
         appConfig = ApplicationConfig.getInstance(emfTest);
@@ -46,10 +55,10 @@ public class EventControllerTests {
                 .checkSecurityRoles()
                 .setRoute(routes.eventResources())
                 .setRoute(routes.testResources())
-                .setRoute(routes.securityResources()) 
-                .setRoute(routes.securedRoutes())               
+                .setRoute(routes.securityResources())
+                .setRoute(routes.securedRoutes())
                 .startServer(7777)
-            ;
+        ;
     }
 
     @BeforeEach
@@ -57,14 +66,15 @@ public class EventControllerTests {
         // Setup test database for each test
         TestUtils.createUsersAndRoles(emfTest);
         TestUtils.createEvents(emfTest);
-        
+
     }
-    
+
     @AfterAll
     static void afterAll() {
         emfTest.close();
         appConfig.stopServer();
     }
+
 
     @Test
     public void getEventById() throws JsonMappingException, JsonProcessingException {
@@ -78,30 +88,51 @@ public class EventControllerTests {
         assertEquals(first.getTitle(), actualEvent.getTitle());
     }    
 
-    
+
     @Test
     void registerUserToEvent() {
         String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
-        TokenDTO token = RestAssured
-            .given()
-            .contentType("application/json")
+        TokenDTO token = given()
+                .contentType("application/json")
                 .body(requestLoginBody)
-            .when()
+                .when()
                 .post("/auth/login")
                 .then()
                 .extract()
                 .as(TokenDTO.class);
 
-        Header header = new Header("Authorization", "Bearer " + token.getToken());        
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
 
         String requestBody = "{\"email\": \"user\",\"id\": \"1\"}";
-        RestAssured.given()
-            .contentType("application/json")
-            .header(header)
-            .body(requestBody)
-            .when()
-            .put("/event/registerUser")
-            .then()
-            .statusCode(200);
+        given()
+                .contentType("application/json")
+                .header(header)
+                .body(requestBody)
+                .when()
+                .put("/event/registerUser")
+                .then()
+                .statusCode(200);
     }
+
+    @Test
+    void getUpcomingEvents() {
+        String dateAsString =
+                given()
+                        .when()
+                        .get("event/upcoming")
+                        .then()
+                        .statusCode(200)
+                        .body("[0].dateOfEvent", notNullValue())
+                        //.body("[0].dateOfEvent", matchesPattern("yyyy-MM-dd"))
+                        .extract()
+                        .path("[0].dateOfEvent");
+
+        LocalDate date = LocalDate.parse(dateAsString);
+
+        assertThat(date, greaterThan(LocalDate.now()));
+
+    }
+
+
 }
+
