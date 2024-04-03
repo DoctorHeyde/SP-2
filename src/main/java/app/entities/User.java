@@ -75,4 +75,14 @@ public class User {
         roles.remove(role);
         role.getUsers().remove(this);
     }
+
+
+    public void addEvent(Event event) {
+        if(event != null){
+            events.add(event);
+            if(!event.getUsers().contains(this)){
+                event.addUser(this);
+            }
+        }
+    }
 }

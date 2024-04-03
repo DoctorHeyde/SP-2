@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalDateTime; 
 import java.util.HashSet;
 import java.util.Set;
 
@@ -92,6 +92,15 @@ public class Event {
             this.canceledAt = localDateTime;
         }
 
+    }
+
+    public void addUser(User user) {
+        if (user !=null){
+            users.add(user);
+            if(!user.getEvents().contains(this)){
+                user.addEvent(this);
+            }
+        }
     }
 
 
