@@ -2,6 +2,7 @@ package app.controllers;
 
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import app.dtos.EventDTO;
@@ -25,10 +26,14 @@ public class EventController {
 
     public Handler addUserToEvent() {
         return ctx -> {
-            Event event = eventDAO.getByID(Integer.parseInt(ctx.pathParam("id")));
-            User user = userDAO.getByID(ctx.pathParam("email"));
-            EventDAO.addUserToEvent(event, user);
-
+            String jsonBody = ctx.body();
+            
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(jsonBody);
+            
+            String password = jsonNode.get("password").asText();
+            String event = jsonNode.get("event").asText();
+            
         };
     }
 
