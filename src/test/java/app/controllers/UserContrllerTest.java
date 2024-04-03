@@ -15,7 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import app.TestUtils;
+import app.utils.TestUtils;
 import app.config.ApplicationConfig;
 import app.config.HibernateConfig;
 import app.controllers.SecurityController;
