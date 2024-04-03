@@ -30,8 +30,12 @@ public class EventController {
 
     public Handler getUpcomingEvent() {
         return ctx -> {
-            List<EventDTO> upComing = eventDAO.getUpcomingEvent();
-            ctx.status(200).json(upComing);
+            List<Event> upComing = eventDAO.getUpcomingEvent();
+
+            List<EventDTO> upComingAsDTO = upComing.stream()
+                    .map(event -> new EventDTO(event.getTitle())).collect(Collectors.toList());
+
+            ctx.status(200).json(upComingAsDTO);
         };
     }
 }

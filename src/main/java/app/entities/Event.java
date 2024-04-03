@@ -29,6 +29,7 @@ public class Event {
 
     private LocalDate dateOfEvent;
 
+    @Column(nullable = true)
     private int durationInHours;
 
     private int maxNumberOfStudents;
@@ -38,6 +39,7 @@ public class Event {
 
     private String instructor;
 
+    @Column(nullable = true)
     private double price;
 
     private String category;
@@ -91,6 +93,10 @@ public class Event {
         if(status.toString().equalsIgnoreCase("canceled")){
             this.canceledAt = localDateTime;
         }
+    }
+
+    public void addUser(User user){
+        users.add(user);
 
     }
 

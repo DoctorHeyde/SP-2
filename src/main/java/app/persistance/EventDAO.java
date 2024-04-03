@@ -31,7 +31,7 @@ public class EventDAO {
         }       
     }
 
-    public List<EventDTO> getUpcomingEvent() {
+    public List<Event> getUpcomingEvent() {
         try (EntityManager em = emf.createEntityManager()) {
             var query = em.createQuery("select a from Event a where a.status = :status").setParameter("status", Status.UPCOMING);
             return query.getResultList();
