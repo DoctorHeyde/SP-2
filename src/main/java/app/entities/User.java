@@ -1,6 +1,7 @@
 package app.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.mindrot.jbcrypt.BCrypt;
@@ -32,6 +33,7 @@ public class User {
 
     @ManyToMany (mappedBy = "users")
     @ToString.Exclude
+    @JsonBackReference
     private Set<Event> events = new HashSet<>();
 
     @ToString.Exclude

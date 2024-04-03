@@ -1,6 +1,7 @@
 package app.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -57,6 +58,7 @@ public class Event {
 
     @ManyToMany
     @ToString.Exclude
+    @JsonManagedReference
     private Set<User> users = new HashSet<>();
 
 
@@ -91,7 +93,16 @@ public class Event {
         if(status.toString().equalsIgnoreCase("canceled")){
             this.canceledAt = localDateTime;
         }
+    }
 
+    public void addUser(User user) {
+        users.add(user);
+        user.getEvents().add(this);
+    }
+
+    public void removeUser(User user) {
+        users.remove(user);
+        user.getEvents().remove(this);
     }
 
 
