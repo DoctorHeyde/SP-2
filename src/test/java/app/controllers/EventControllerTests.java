@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import app.TestUtils;
 import app.config.ApplicationConfig;
 import app.config.HibernateConfig;
 import app.dtos.TokenDTO;
 import app.utils.Routes;
+import app.utils.TestUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import jakarta.persistence.EntityManagerFactory;

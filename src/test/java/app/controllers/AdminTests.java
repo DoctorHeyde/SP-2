@@ -1,8 +1,6 @@
 package app.controllers;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Map;
 
@@ -15,23 +13,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import app.TestUtils;
 import app.config.ApplicationConfig;
 import app.config.HibernateConfig;
-import app.controllers.SecurityController;
 import app.dtos.EventDTO;
 import app.dtos.TokenDTO;
 import app.dtos.UserDTO;
 import app.entities.Event;
 import app.entities.User;
-import app.persistance.UserDAO;
 import app.utils.Routes;
-import app.utils.TokenUtil;
+import app.utils.TestUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
-import io.restassured.response.ResponseBody;
-import app.config.ApplicationConfig;
 import static io.restassured.RestAssured.*;
 import jakarta.persistence.EntityManagerFactory;
 
