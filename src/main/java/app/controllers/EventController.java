@@ -25,4 +25,11 @@ public class EventController {
             ctx.status(HttpStatus.OK).json(json);
         };
     }
+
+    public Handler getEventById(){
+        return ctx -> {
+            throw new UnsupportedOperationException();
+        };
+    }
 }
+

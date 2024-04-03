@@ -6,7 +6,6 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 
 import org.eclipse.jetty.io.EndPoint;
 
-import app.controllers.AdminController;
 import app.controllers.EventController;
 import app.controllers.SecurityController;
 import app.controllers.UserController;
@@ -57,6 +56,12 @@ public class Routes {
             path("/events", () -> {
                 get(eventController.getAllEvents(), SecurityRoles.ADMIN);
             });
+        };
+    }
+
+    public EndpointGroup unsecuredRoutes(){
+        return () -> {
+            get("/events/:id", eventController.getEventById(), SecurityRoles.ANYONE);
         };
     }
 }
