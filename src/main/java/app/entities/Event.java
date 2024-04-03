@@ -98,8 +98,12 @@ public class Event {
     }
 
     public void removeUser(User user) {
-        users.remove(user);
-        user.getEvents().remove(this);
+        if(user != null){
+            users.remove(user);
+            if(user.getEvents().contains(this)){
+                user.removeEvent(this);
+            }
+        }
     }
 
     public void addUser(User user) {
@@ -110,11 +114,4 @@ public class Event {
             }
         }
     }
-
-
-
-
-
-
-
 }

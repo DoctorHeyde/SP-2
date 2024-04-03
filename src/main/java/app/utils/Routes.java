@@ -40,8 +40,8 @@ public class Routes {
         return () -> {
             path("/event", () -> {
                 put("/registerUser", eventController.addUserToEvent(), SecurityRoles.USER);
+                put("/cancelRegistration", eventController.cancelRegistration(), SecurityRoles.USER);
                 get("/upcoming", eventController.getUpcomingEvents(), SecurityRoles.ANYONE);
-            
             });
         };
     }

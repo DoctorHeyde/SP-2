@@ -16,11 +16,13 @@ import app.config.HibernateConfig;
 import app.dtos.EventDTO;
 import app.dtos.TokenDTO;
 import app.entities.Event;
+import app.entities.User;
 import app.utils.Routes;
 import app.utils.TestUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
 
@@ -66,7 +68,7 @@ public class EventControllerTests {
         // Setup test database for each test
         TestUtils.createUsersAndRoles(emfTest);
         TestUtils.createEvents(emfTest);
-
+        TestUtils.addEventToUser(emfTest);       
     }
 
     @AfterAll
@@ -104,14 +106,45 @@ public class EventControllerTests {
         Header header = new Header("Authorization", "Bearer " + token.getToken());
 
         String requestBody = "{\"email\": \"user\",\"id\": \"1\"}";
-        given()
-                .contentType("application/json")
-                .header(header)
-                .body(requestBody)
-                .when()
-                .put("/event/registerUser")
+        RestAssured.given()
+            .contentType("application/json")
+            .header(header)
+            .body(requestBody)
+            .when()
+            .put("/event/registerUser")
+            .then()
+            .statusCode(200);
+
+        try(EntityManager em = emfTest.createEntityManager()){
+            Event event = em.createQuery("FROM Event e WHERE e.id = 1", Event.class).getSingleResult();
+            assertEquals(1, event.getUsers().size());
+        }
+    }
+       
+    @Test
+    void cancelRegistration() {
+        String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
+        TokenDTO token = RestAssured
+            .given()
+            .contentType("application/json")
+                .body(requestLoginBody)
+            .when()
+                .post("/auth/login")
                 .then()
-                .statusCode(200);
+                .extract()
+                .as(TokenDTO.class);
+
+        Header header = new Header("Authorization", "Bearer " + token.getToken());        
+
+        String requestBody = "{\"email\": \"user\",\"id\": \"2\"}";
+        RestAssured.given()
+            .contentType("application/json")
+            .header(header)
+            .body(requestBody)
+            .when()
+            .put("/event/cancelRegistration")
+            .then()
+            .statusCode(200);
     }
 
     @Test

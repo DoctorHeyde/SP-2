@@ -87,4 +87,13 @@ public class User {
             }
         }
     }
+
+    public void removeEvent(Event event) {
+        if(event != null){
+            events.remove(event);
+            if(event.getUsers().contains(this)){
+                event.removeUser(this);
+            }
+        }
+    }
 }

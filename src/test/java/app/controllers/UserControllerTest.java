@@ -21,10 +21,12 @@ import app.dtos.EventDTO;
 import app.dtos.TokenDTO;
 import app.entities.Event;
 import app.utils.Routes;
+import app.utils.TestUtils;
+import app.utils.TokenUtil;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
-
+import io.restassured.response.ResponseBody;
 import static io.restassured.RestAssured.*;
 import jakarta.persistence.EntityManagerFactory;
 

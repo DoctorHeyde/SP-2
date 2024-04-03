@@ -75,4 +75,13 @@ public class EventDAO extends ADAO<Event, Integer> {
 
         }
     }
+
+    public static void cancelRegistration(Event eventObj, User user) {
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            eventObj.removeUser(user);
+            em.merge(eventObj);
+            em.getTransaction().commit();
+        }
+    }
 }

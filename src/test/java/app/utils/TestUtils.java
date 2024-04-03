@@ -65,6 +65,17 @@ public class TestUtils {
             em.getTransaction().commit();
         }
     }
+
+    public static void addEventToUser(EntityManagerFactory emfTest) {
+        try (EntityManager em = emfTest.createEntityManager()) {
+            em.getTransaction().begin();
+            User user = em.createQuery("FROM User u WHERE u.email = 'user'", User.class).getSingleResult();
+            Event event = em.createQuery("FROM Event e WHERE e.title = 'title2'", Event.class).getSingleResult();
+            user.addEvent(event);
+            em.persist(user);
+            em.getTransaction().commit();
+        }
+    }
     public static Map<String, Event> getEvents(EntityManagerFactory emfTest) {
         try(EntityManager em = emfTest.createEntityManager()){
             return em.createQuery("FROM Event e", Event.class).getResultList().stream().collect(Collectors.toMap(e -> e.getTitle(), e -> e));
