@@ -59,6 +59,7 @@ public class EventControllerTests {
                 .setRoute(routes.testResources())
                 .setRoute(routes.securityResources())
                 .setRoute(routes.securedRoutes())
+                .setRoute(routes.unsecuredRoutes())
                 .startServer(7777)
         ;
     }
