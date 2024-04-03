@@ -31,7 +31,7 @@ public class User {
     private int phoneNumber;
 
 
-    @ManyToMany (mappedBy = "users")
+    @ManyToMany (mappedBy = "users", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @ToString.Exclude
     @JsonBackReference
     private Set<Event> events = new HashSet<>();
@@ -76,5 +76,15 @@ public class User {
     public void removeRole(Role role) {
         roles.remove(role);
         role.getUsers().remove(this);
+    }
+
+
+    public void addEvent(Event event) {
+        if(event != null){
+            events.add(event);
+            if(!event.getUsers().contains(this)){
+                event.addUser(this);
+            }
+        }
     }
 }

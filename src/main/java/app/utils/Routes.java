@@ -6,7 +6,6 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 
 import org.eclipse.jetty.io.EndPoint;
 
-import app.controllers.AdminController;
 import app.controllers.EventController;
 import app.controllers.SecurityController;
 import app.controllers.UserController;
@@ -35,6 +34,15 @@ public class Routes {
                 post("/login", securityController.login(), SecurityRoles.ANYONE);
                 post("/register", securityController.register(), SecurityRoles.ANYONE);
                 post("/addRoleToUser", securityController.addRoleToUser(), SecurityRoles.ADMIN);
+            });
+        };
+    }
+
+    public EndpointGroup eventResources() {
+        return () -> {
+            path("/event", () -> {
+                put("/registerUser", eventController.addUserToEvent(), SecurityRoles.USER);
+            
             });
         };
     }
