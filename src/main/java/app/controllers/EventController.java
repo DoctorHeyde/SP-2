@@ -59,5 +59,14 @@ public class EventController {
         };
     }
 
-    
+    public Handler getEventById(){
+        return ctx -> {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            EventDTO eventDTO = new EventDTO(eventDAO.getEventById(id));
+            String json = objectMapper.writeValueAsString(eventDTO);
+            ctx.status(HttpStatus.OK).json(json);
+        };
+    }
+
 }
+

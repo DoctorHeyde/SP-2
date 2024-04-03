@@ -47,6 +47,7 @@ public class TestUtils {
     public static Map<String, User> getUsers(EntityManagerFactory emfTest) {
         return UserDAO.getUserDAOInstance(emfTest).getAllUsers().stream().collect(Collectors.toMap(u -> u.getEmail(), u -> u));
     }
+    
     public static void createEvents(EntityManagerFactory emfTest) {
         try (EntityManager em = emfTest.createEntityManager()) {
             em.getTransaction().begin();

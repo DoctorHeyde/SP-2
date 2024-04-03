@@ -58,4 +58,10 @@ public class EventDAO extends ADAO<Event, Integer> {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
+
+    public Event getEventById(int id) {
+        try(EntityManager em = emf.createEntityManager()){
+            return em.find(Event.class, id);
+        }
+    }
 }
