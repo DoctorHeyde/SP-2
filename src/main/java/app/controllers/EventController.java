@@ -42,7 +42,7 @@ public class EventController {
 
     public Handler getAllEvents() {
         return ctx -> {
-            String json = objectMapper.writeValueAsString(eventDAO.getAllEvents().stream().map(e -> new EventDTO(e)).collect(Collectors.toList()));
+            String json = objectMapper.writeValueAsString(eventDAO.getAllEvents().stream().map(e -> new EventDTO(e.getTitle())).collect(Collectors.toList()));
             System.out.println(json);
             ctx.status(HttpStatus.OK).json(json);
         };

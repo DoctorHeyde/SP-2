@@ -47,8 +47,8 @@ public class EventDTO {
     private String canceledAt;
     private Set<UserDTO> users;
 
-    public EventDTO(Event event) {
-        title = event.getTitle();
+    public EventDTO(String title) {
+        this.title = title;
     }
 
     public EventDTO(String title, String dateOfEvent) {
@@ -79,4 +79,4 @@ public class EventDTO {
         if (event.getCanceledAt() != null) this.canceledAt = event.getCanceledAt().toString();
     }
 }
-}
+
