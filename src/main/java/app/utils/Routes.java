@@ -47,6 +47,14 @@ public class Routes {
         };
     }
 
+    public EndpointGroup eventResourcesRoutes() {
+        return () -> {
+            path("/event", () -> {
+                get("/upcoming", eventController.getUpcomingEvent(), SecurityRoles.ANYONE);
+            });
+        };
+    }
+
     public EndpointGroup securedRoutes() {
         return () -> {
             before(securityController.authenticate());

@@ -1,7 +1,9 @@
 package app.controllers;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
+import app.entities.Event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import app.dtos.EventDTO;
@@ -23,6 +25,13 @@ public class EventController {
             String json = objectMapper.writeValueAsString(eventDAO.getAllEvents().stream().map(e -> new EventDTO(e)).collect(Collectors.toList()));
             System.out.println(json);
             ctx.status(HttpStatus.OK).json(json);
+        };
+    }
+
+    public Handler getUpcomingEvent() {
+        return ctx -> {
+            List<EventDTO> upComing = eventDAO.getUpcomingEvent();
+            ctx.status(200).json(upComing);
         };
     }
 }
