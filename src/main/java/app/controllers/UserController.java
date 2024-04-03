@@ -6,17 +6,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import app.dtos.UserDTO;
 import app.persistance.UserDAO;
-import app.utils.TokenUtil;
 import io.javalin.http.Handler;
 import io.javalin.http.HttpStatus;
 import jakarta.persistence.EntityManagerFactory;
 
-public class AdminController {
+
+public class UserController {
+
     private UserDAO userDAO;
     private ObjectMapper objectMapper = new ObjectMapper();
-    private TokenUtil tokenUtil = new TokenUtil();
 
-    public AdminController(EntityManagerFactory emf) {
+    public UserController(EntityManagerFactory emf) {
         userDAO = UserDAO.getUserDAOInstance(emf);
     }
 
@@ -27,5 +27,5 @@ public class AdminController {
             ctx.status(HttpStatus.OK).json(json);
         };
     }
-
+    
 }
