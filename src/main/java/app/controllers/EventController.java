@@ -48,7 +48,8 @@ public class EventController {
         };
     }
 
-    public Handler getUpcomingEvent() {
+
+    public Handler getUpcomingEvents() {
         return ctx -> {
             List<Event> upComing = eventDAO.getUpcomingEvent();
 
