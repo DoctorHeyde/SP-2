@@ -6,9 +6,10 @@ import java.util.stream.Collectors;
 import app.dtos.EventDTO;
 import app.entities.Event;
 import app.entities.User;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
-public class EventDAO extends ADAO<Event, EventDTO, Integer> {
+public class EventDAO extends ADAO<Event, Integer> {
     private static EntityManagerFactory emf;
 
     private static EventDAO instance;
@@ -37,5 +38,23 @@ public class EventDAO extends ADAO<Event, EventDTO, Integer> {
         try (EntityManager em = emf.createEntityManager()) {
             return em.createQuery("From Event e", Event.class).getResultList();
         }     
+    }
+
+    @Override
+    public List<Event> getAll() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAll'");
+    }
+
+    @Override
+    public Event getByID(Integer i) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getByID'");
+    }
+
+    @Override
+    public void update(Event t) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 }
