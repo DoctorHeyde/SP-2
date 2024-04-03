@@ -24,7 +24,7 @@ public class Main {
                 .setExceptionHandling()
                 .setRoute(routes.securityResources())
                 .setRoute(routes.testResources())
-                .setRoute(routes.eventResourcesRoutes())
+                .setRoute(routes.eventResources())
                 //Add more endpoints here
                 .checkSecurityRoles();
     }

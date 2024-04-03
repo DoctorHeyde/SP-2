@@ -40,6 +40,7 @@ public class Routes {
         return () -> {
             path("/event", () -> {
                 put("/registerUser", eventController.addUserToEvent(), SecurityRoles.USER);
+                get("/upcoming", eventController.getUpcomingEvents(), SecurityRoles.ANYONE);
             
             });
         };
@@ -52,14 +53,16 @@ public class Routes {
             });
         };
     }
-
+/*
     public EndpointGroup eventResourcesRoutes() {
         return () -> {
             path("/event", () -> {
-                get("/upcoming", eventController.getUpcomingEvents(), SecurityRoles.ANYONE);
+
             });
         };
     }
+
+ */
 
     public EndpointGroup securedRoutes() {
         return () -> {
