@@ -8,6 +8,7 @@ import app.entities.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import app.dtos.UserDTO;
+import app.entities.User;
 import app.persistance.UserDAO;
 import io.javalin.http.Handler;
 import io.javalin.http.HttpStatus;
@@ -31,12 +32,13 @@ public class UserController {
         };
     }
 
+
     public Handler updateUser() {
         return ctx -> {
 
             UserDTO updateUserAsDTO = ctx.bodyAsClass(UserDTO.class);
 
-            User updateUser = userDAO.getByID(updateUserAsDTO.getEmail());
+            User updateUser = userDAO.getById(updateUserAsDTO.getEmail());
 
             userDAO.updateUser(updateUser);
             ctx.status(201).json("User has been updated ");
@@ -44,4 +46,18 @@ public class UserController {
 
         };
     }
+    public Handler deleteUser() {
+        return ctx -> {
+            String userId = ctx.pathParam("id");
+            UserDTO user = ctx.attribute("user");
+            if(!userId.equals(user.getEmail())){
+                ctx.status(HttpStatus.FORBIDDEN).json(objectMapper.createObjectNode().put("msg","Delete not allowed"));
+                return;
+            }
+            
+            userDAO.deleteUser(userDAO.getById(user.getEmail()));
+            ctx.status(HttpStatus.NO_CONTENT);
+        };
+    }
+
 }
