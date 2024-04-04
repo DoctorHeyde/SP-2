@@ -112,4 +112,12 @@ public class UserDAO implements IUserDAO {
             return em.find(User.class, id);
         }
     }
+
+    public void deleteUser(User user) {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            em.remove(user);
+            em.getTransaction().commit();
+        }
+    }
 }

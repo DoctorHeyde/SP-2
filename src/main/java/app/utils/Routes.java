@@ -69,6 +69,7 @@ public class Routes {
             before(securityController.authenticate());
             path("/users", () -> {
                 get(userController.getAllUsers(), SecurityRoles.ADMIN);
+                delete("/delete/{id}", userController.deleteUser(), SecurityRoles.ADMIN,SecurityRoles.INSTRUCTOR,SecurityRoles.STUDENT,SecurityRoles.USER);
             });
             before(securityController.authenticate());
             path("/events", () -> {

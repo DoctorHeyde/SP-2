@@ -1,5 +1,7 @@
 package app.controllers;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -20,9 +22,11 @@ import app.config.HibernateConfig;
 import app.dtos.EventDTO;
 import app.dtos.TokenDTO;
 import app.entities.Event;
+import app.entities.User;
 import app.utils.Routes;
 import app.utils.TestUtils;
 import app.utils.TokenUtil;
+import io.javalin.http.HttpStatus;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
@@ -71,13 +75,7 @@ public class UserControllerTest {
         emfTest.close();
         appConfig.stopServer();
     }
-    
-    @Test
-    public void defTest(){
-        given().when().get("/test/hello").peek().then().statusCode(200);
-    }
-
-       
+        
 
     @Test
     public void getAllEvents() throws JsonMappingException, JsonProcessingException {
@@ -103,4 +101,28 @@ public class UserControllerTest {
             assertEquals(event.getTitle(), allEvents.get(event.getTitle()).getTitle());
         }
     }    
+
+    @Test
+    public void deleteUser() throws JsonMappingException, JsonProcessingException{
+        String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
+        Response logingResponse =
+            given()
+                .body(requestLoginBody)
+            .when()
+                .post("/auth/login");
+
+        TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
+        User user = TestUtils.getUsers(emfTest).values().stream().filter(u -> u.getName().equals("user")).findFirst().get();
+        given()
+            .header(header)
+            .when()
+            .delete("/users/delete/" + user.getEmail())
+            .then()
+            .statusCode(HttpStatus.NO_CONTENT.getCode());
+        
+        Map<String, User> users = TestUtils.getUsers(emfTest);
+
+        assertNull(users.get("user"));
+    }
 }
