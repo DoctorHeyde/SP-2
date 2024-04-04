@@ -102,6 +102,7 @@ public class EventController {
 
             Event updatedEvent = new Event(updatedEventAsDTO);
             updatedEvent.setId(id);
+
             Event updatedEventNowInDB = eventDAO.updateEvent(updatedEvent);
 
             EventDTO updatedEventInDBAsDTO = new EventDTO(updatedEventNowInDB);

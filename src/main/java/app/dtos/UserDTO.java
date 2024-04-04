@@ -12,8 +12,11 @@ import java.util.Set;
 @ToString
 public class UserDTO {
 
+
     private String email;
     private String password;
+
+    private String newPassword;
     private String name;
     private int phoneNumber;
     @ToString.Exclude
@@ -28,6 +31,13 @@ public class UserDTO {
         this.email = email;
         this.password = password;
     }
+
+    public UserDTO(String email, String password, String newPassword) {
+        this.email = email;
+        this.password = password;
+        this.newPassword = newPassword;
+    }
+
     public UserDTO(String email, String name, Set<String> roles) {
         this.email = email;
         this.name = name;
@@ -41,6 +51,14 @@ public class UserDTO {
         this.phoneNumber = user.getPhoneNumber();
         setRoles(user.getRolesAsString());
 
+    }
+
+    public UserDTO(String email, String password, String name, int phoneNumber, Set<String> roles) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.roles = roles;
     }
 
     public boolean hasRole(String role) {

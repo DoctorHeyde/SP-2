@@ -17,7 +17,7 @@ Content-Type: application/json
 
 {
   "email": "finn@email.dk",
-  "password": "1234"
+  "password": "4321"
 
 }
 
@@ -44,3 +44,17 @@ Content-Type: application/json
   "image": "image",
   "status": "UPCOMING"
 }
+
+
+###
+PUT http://localhost:7170/api/resetUserPassword
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJMYXVyaXR6IEhhdWdlIiwibmFtZSI6IkZpbm4iLCJzdWIiOiJmaW5uQGVtYWlsLmRrIiwiZXhwIjoxNzEyMjMwNzIxLCJlbWFpbCI6ImZpbm5AZW1haWwuZGsiLCJyb2xlcyI6IixpbnN0cnVjdG9yLHVzZXIifQ.NNWShCmGgc9SIepb1qJvU_PnbP_YYFBOoGTD_TBKpKg
+Content-Type: application/json
+
+{
+  "email": "finn@email.dk",
+  "password": "1234",
+  "newPassword": "4321"
+}
+
+

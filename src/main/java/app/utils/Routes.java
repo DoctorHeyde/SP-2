@@ -32,6 +32,7 @@ public class Routes {
                 post("/login", securityController.login(), SecurityRoles.ANYONE);
                 post("/register", securityController.register(), SecurityRoles.ANYONE);
                 post("/addRoleToUser", securityController.addRoleToUser(), SecurityRoles.ADMIN);
+
             });
         };
     }
@@ -59,11 +60,16 @@ public class Routes {
             before(securityController.authenticate());
             path("/users", () -> {
                 get(userController.getAllUsers(), SecurityRoles.ADMIN);
+
             });
             before(securityController.authenticate());
             path("/events", () -> {
                 get(eventController.getAllEvents(), SecurityRoles.ADMIN, SecurityRoles.INSTRUCTOR);
                 put("/{id}", eventController.updateEvent(), SecurityRoles.ADMIN, SecurityRoles.INSTRUCTOR);
+            });
+            before(securityController.authenticate());
+            path("/resetUserPassword", () -> {
+                put(securityController.resetPassword(), SecurityRoles.ADMIN, SecurityRoles.STUDENT, SecurityRoles.INSTRUCTOR);
             });
         };
     }

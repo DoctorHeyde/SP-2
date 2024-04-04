@@ -193,13 +193,6 @@ public class EventControllerTests {
                 .when()
                 .header(header)
                 .body(updateBody)
-                /*.body(new Event("title4", "startTime", "description",
-                        LocalDate.of(2024, 04, 29),
-                        100, 44,
-                        "locationOfEvent", "instructor", 20d, "Sport",
-                        "image", Status.UPCOMING))
-
-                 */
                 .when()
                 .request("PUT", "events/4")
                 .then()
@@ -219,6 +212,8 @@ public class EventControllerTests {
                 .body("title", equalTo("title4"));
 
     }
+
+
 }
 
 

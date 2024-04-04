@@ -51,6 +51,7 @@ public class UserDAO implements IUserDAO {
 
     @Override
     public User verifyUser(String email, String password) throws EntityNotFoundException {
+
         try (EntityManager em = emf.createEntityManager()) {
             User user = em.find(User.class, email);
 
@@ -69,6 +70,7 @@ public class UserDAO implements IUserDAO {
                 throw new EntityNotFoundException("No user found with email: " + email);
             if (!user.verifyPassword(password))
                 throw new EntityNotFoundException("Wrong password");
+
             return user;
         }
     }
@@ -110,6 +112,15 @@ public class UserDAO implements IUserDAO {
     public User getByID(String id) {
         try (EntityManager em = emf.createEntityManager()) {
             return em.find(User.class, id);
+        }
+    }
+
+    public void updateUser(User user) {
+
+        try(var em = emf.createEntityManager()){
+            em.getTransaction().begin();
+            em.merge(user);
+            em.getTransaction().commit();
         }
     }
 }

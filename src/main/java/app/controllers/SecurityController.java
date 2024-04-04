@@ -2,6 +2,9 @@ package app.controllers;
 
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import app.exceptions.NotAuthorizedException;
+import app.utils.SecurityRoles;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -49,11 +52,13 @@ public class SecurityController implements ISecurityController {
             ObjectNode returnObject = objectMapper.createObjectNode(); // for sending json messages back to the client
             try {
                 UserDTO user = ctx.bodyAsClass(UserDTO.class);
-                System.out.println("USER IN LOGIN: " + user);
 
                 User verifiedUserEntity = userDAO.verifyUser(user.getEmail(), user.getPassword());
+
                 String token = TokenUtil.createToken(new UserDTO(verifiedUserEntity));
+
                 ctx.status(200).json(new TokenDTO(token, user.getEmail()));
+
             } catch (EntityNotFoundException | ValidationException e) {
                 ctx.status(401);
                 System.out.println(e.getMessage());
@@ -61,6 +66,7 @@ public class SecurityController implements ISecurityController {
             }
         };
     }
+
 
     @Override
     public boolean authorize(UserDTO user, Set<String> allowedRoles) {
@@ -127,4 +133,26 @@ public class SecurityController implements ISecurityController {
         };
     }
 
+    public Handler resetPassword() {
+        return ctx -> {
+
+            ObjectNode returnObject = objectMapper.createObjectNode();
+
+            try {
+                UserDTO userDTO = ctx.bodyAsClass(UserDTO.class);
+
+                User verifiedUserEntity = userDAO.verifyUser(userDTO.getEmail(), userDTO.getPassword());
+
+                verifiedUserEntity.setNewPassword(userDTO.getNewPassword());
+                userDAO.updateUser(verifiedUserEntity);
+
+                ctx.status(201).json("Password has been reset");
+
+            } catch (EntityNotFoundException e) {
+
+                ctx.status(HttpStatus.NOT_FOUND);
+                ctx.json(returnObject.put("Message: ", e.getMessage()));
+            }
+        };
+    }
 }
