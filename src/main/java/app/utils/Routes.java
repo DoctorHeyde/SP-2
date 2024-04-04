@@ -5,7 +5,6 @@ import jakarta.persistence.EntityManagerFactory;
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 import org.eclipse.jetty.io.EndPoint;
-
 import app.controllers.EventController;
 import app.controllers.SecurityController;
 import app.controllers.UserController;
@@ -42,7 +41,8 @@ public class Routes {
         return () -> {
             path("/event", () -> {
                 put("/registerUser", eventController.addUserToEvent(), SecurityRoles.USER);
-            
+                put("/cancelRegistration", eventController.cancelRegistration(), SecurityRoles.USER);
+                get("/upcoming", eventController.getUpcomingEvents(), SecurityRoles.ANYONE);
             });
         };
     }
@@ -54,6 +54,16 @@ public class Routes {
             });
         };
     }
+/*
+    public EndpointGroup eventResourcesRoutes() {
+        return () -> {
+            path("/event", () -> {
+
+            });
+        };
+    }
+
+ */
 
     public EndpointGroup securedRoutes() {
         return () -> {
@@ -63,8 +73,14 @@ public class Routes {
             });
             before(securityController.authenticate());
             path("/events", () -> {
-                get(eventController.getAllEvents(), SecurityRoles.ADMIN);
+                get(eventController.getAllEvents(), SecurityRoles.ADMIN, SecurityRoles.INSTRUCTOR);
             });
+        };
+    }
+
+    public EndpointGroup unsecuredRoutes(){
+        return () -> {
+            get("/events/{id}", eventController.getEventById(), SecurityRoles.ANYONE);
         };
     }
 }

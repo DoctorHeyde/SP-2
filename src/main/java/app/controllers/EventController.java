@@ -1,11 +1,13 @@
 package app.controllers;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import app.dtos.EventDTO;
+import app.dtos.UserDTO;
 import app.entities.Event;
 import app.entities.User;
 import app.persistance.EventDAO;
@@ -30,17 +32,40 @@ public class EventController {
             
             ObjectMapper mapper = new ObjectMapper();
             JsonNode jsonNode = mapper.readTree(jsonBody);
-            
             String password = jsonNode.get("password").asText();
             String event = jsonNode.get("event").asText();
-            
+            String email = jsonNode.get("email").asText();
+            Integer eventID = jsonNode.get("id").asInt();
+            User user = userDAO.getByID(email);
+            Event eventObj = eventDAO.getByID(eventID);
+            EventDAO.addUserToEvent(eventObj, user);
         };
     }
 
     public Handler getAllEvents() {
         return ctx -> {
-            String json = objectMapper.writeValueAsString(eventDAO.getAllEvents().stream().map(e -> new EventDTO(e)).collect(Collectors.toList()));
-            System.out.println(json);
+
+            UserDTO user = ctx.attribute("user");
+            List<Event> events = eventDAO.getAllEvents();
+            if(user.hasRole("ADMIN")){
+                String json = objectMapper.writeValueAsString(events.stream().map(e -> new EventDTO(e)).collect(Collectors.toList()));
+                System.out.println(json);
+                ctx.status(HttpStatus.OK).json(json);
+            }
+            if(user.hasRole("INSTRUCTOR")){
+                List<EventDTO> eventDTOs = events.stream().filter(e -> e.getInstructor().equalsIgnoreCase(user.getName())).map(e -> new EventDTO(e)).collect(Collectors.toList());
+                String json = objectMapper.writeValueAsString(eventDTOs);
+                System.out.println(json);
+                ctx.status(HttpStatus.OK).json(json);
+            }
+        };
+    }
+
+    public Handler getEventById(){
+        return ctx -> {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            EventDTO eventDTO = new EventDTO(eventDAO.getEventById(id));
+            String json = objectMapper.writeValueAsString(eventDTO);
             ctx.status(HttpStatus.OK).json(json);
         };
     }
@@ -51,4 +76,28 @@ public class EventController {
             eventDAO.create(event);
         };
     }
+
+    public Handler cancelRegistration() {
+        return ctx -> {
+            String jsonBody = ctx.body();
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(jsonBody);
+            String email = jsonNode.get("email").asText();
+            Integer eventID = jsonNode.get("id").asInt();
+            User user = userDAO.getByID(email);
+            Event eventObj = eventDAO.getByID(eventID);
+            EventDAO.cancelRegistration(eventObj, user);
+        };
+    }
+    public Handler getUpcomingEvents() {
+        return ctx -> {
+            List<Event> upComing = eventDAO.getUpcomingEvent();
+
+            List<EventDTO> upComingAsDTO = upComing.stream()
+                    .map(event -> new EventDTO(event.getTitle(), event.getDateOfEvent().toString())).collect(Collectors.toList());
+
+            ctx.status(200).json(upComingAsDTO);
+        };
+    }
 }
+

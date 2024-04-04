@@ -1,6 +1,7 @@
 package app.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +21,7 @@ public class Event {
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     private String title;
 
     private String startTime;
@@ -29,6 +30,7 @@ public class Event {
 
     private LocalDate dateOfEvent;
 
+    @Column(nullable = true)
     private int durationInHours;
 
     private int maxNumberOfStudents;
@@ -38,6 +40,7 @@ public class Event {
 
     private String instructor;
 
+    @Column(nullable = true)
     private double price;
 
     private String category;
@@ -55,8 +58,9 @@ public class Event {
 
     private LocalDateTime canceledAt;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @ToString.Exclude
+    @JsonManagedReference
     private Set<User> users = new HashSet<>();
 
 
@@ -91,7 +95,15 @@ public class Event {
         if(status.toString().equalsIgnoreCase("canceled")){
             this.canceledAt = localDateTime;
         }
+    }
 
+    public void removeUser(User user) {
+        if(user != null){
+            users.remove(user);
+            if(user.getEvents().contains(this)){
+                user.removeEvent(this);
+            }
+        }
     }
 
     public void addUser(User user) {
@@ -102,11 +114,4 @@ public class Event {
             }
         }
     }
-
-
-
-
-
-
-
 }

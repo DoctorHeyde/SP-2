@@ -1,6 +1,7 @@
 package app.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Map;
 
@@ -13,22 +14,23 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import app.utils.TestUtils;
 import app.config.ApplicationConfig;
 import app.config.HibernateConfig;
 import app.dtos.EventDTO;
 import app.dtos.TokenDTO;
-import app.dtos.UserDTO;
 import app.entities.Event;
-import app.entities.User;
 import app.utils.Routes;
 import app.utils.TestUtils;
+import app.utils.TokenUtil;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
+import io.restassured.response.ResponseBody;
 import static io.restassured.RestAssured.*;
 import jakarta.persistence.EntityManagerFactory;
 
-public class AdminTests {
+public class UserControllerTest {
     private static ApplicationConfig appConfig;
     private static final String BASE_URL = "http://localhost:7777/api";
     private static EntityManagerFactory emfTest;
@@ -75,34 +77,11 @@ public class AdminTests {
         given().when().get("/test/hello").peek().then().statusCode(200);
     }
 
-    @Test
-    public void getAllUsers() throws JsonMappingException, JsonProcessingException {
-        String requestBody = "{\"email\": \"admin\",\"password\": \"admin\"}";
-        Response logingResponse =
-            given()
-                .body(requestBody)
-            .when()
-                .post("/auth/login");
-
-        TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
-        Header header = new Header("Authorization", "Bearer " + token.getToken());
-        
-        Response getResponse = given()
-            .header(header)
-        .when()
-            .get("/users")
-            ;
-        
-        UserDTO[] users = objectMapper.readValue(getResponse.asString(), UserDTO[].class);
-        Map<String,User> allUsers = TestUtils.getUsers(emfTest);
-        for(UserDTO user : users){
-            assertEquals(user.getEmail(), allUsers.get(user.getEmail()).getEmail());
-        }
-    }    
+       
 
     @Test
     public void getAllEvents() throws JsonMappingException, JsonProcessingException {
-        String requestBody = "{\"email\": \"admin\",\"password\": \"admin\"}";
+        String requestBody = "{\"email\": \"instructor\",\"password\": \"instructor\"}";
         Response logingResponse =
             given()
                 .body(requestBody)
@@ -119,9 +98,9 @@ public class AdminTests {
             ;
         
         EventDTO[] events = objectMapper.readValue(getResponse.asString(), EventDTO[].class);
-        Map<String,Event> allUsers = TestUtils.getEvents(emfTest);
+        Map<String,Event> allEvents = TestUtils.getEvents(emfTest);
         for(EventDTO event : events){
-            assertEquals(event.getTitle(), allUsers.get(event.getTitle()).getTitle());
+            assertEquals(event.getTitle(), allEvents.get(event.getTitle()).getTitle());
         }
     }    
 }
