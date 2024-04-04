@@ -37,17 +37,13 @@ public class EventDAO extends ADAO<Event, Integer> {
         }
     }
 
-    public List<Event> getAllEvents() {
+    @Override
+    public List<Event> getAll() {
         try (EntityManager em = emf.createEntityManager()) {
             return em.createQuery("From Event e", Event.class).getResultList();
         }
     }
 
-    @Override
-    public List<Event> getAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAll'");
-    }
 
     @Override
     public Event getById(Integer id) {
@@ -55,16 +51,6 @@ public class EventDAO extends ADAO<Event, Integer> {
             return em.find(Event.class, id);
         }
     }
-
-    @Override
-    public void update(Event t) {
-        try(var em = emf.createEntityManager()){
-            em.getTransaction().begin();
-            em.merge(t);
-            em.getTransaction().commit();
-        }
-    }
-
 
     public List<Event> getUpcomingEvent() {
         try (EntityManager em = emf.createEntityManager()) {
@@ -96,16 +82,14 @@ public class EventDAO extends ADAO<Event, Integer> {
         }
     }
     
-    public Event updateEvent(Event updatedEvent) {
+    @Override
+    public Event update(Event updatedEvent) {
 
         try(var em = emf.createEntityManager()){
 
             em.getTransaction().begin();
-            em.merge(updatedEvent);
+            Event eventUpdatedInDb = em.merge(updatedEvent);
             em.getTransaction().commit();
-
-            Event eventUpdatedInDb = em.find(Event.class, updatedEvent.getId());
-
             return eventUpdatedInDb;
         }
     }
