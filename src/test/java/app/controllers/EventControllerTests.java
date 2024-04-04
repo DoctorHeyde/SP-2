@@ -27,8 +27,10 @@ import jakarta.persistence.EntityManagerFactory;
 
 
 import java.time.LocalDate;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
@@ -165,6 +167,20 @@ public class EventControllerTests {
 
         assertThat(date, greaterThan(LocalDate.now()));
 
+    }
+
+    @Test
+    void getEventByCategory(){
+        Map<String,Event> events = TestUtils.getEvents(emfTest);
+        var eventsByCategory = given().when()
+            .get("/events/category/category")
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(EventDTO[].class)
+            ;
+        assertEquals(events.size(), eventsByCategory.length);
+        
     }
 
 

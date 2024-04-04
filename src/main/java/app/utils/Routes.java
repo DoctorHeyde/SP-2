@@ -80,6 +80,7 @@ public class Routes {
     public EndpointGroup unsecuredRoutes(){
         return () -> {
             get("/events/{id}", eventController.getEventById(), SecurityRoles.ANYONE);
+            get("/events/category/{category}", eventController.getEventByCategory(), SecurityRoles.ANYONE);
         };
     }
 }
