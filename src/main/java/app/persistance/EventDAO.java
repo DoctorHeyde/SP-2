@@ -49,7 +49,7 @@ public class EventDAO extends ADAO<Event, Integer> {
     }
 
     @Override
-    public Event getByID(Integer id) {
+    public Event getById(Integer id) {
         try (EntityManager em = emf.createEntityManager()) {
             return em.find(Event.class, id);
         }
