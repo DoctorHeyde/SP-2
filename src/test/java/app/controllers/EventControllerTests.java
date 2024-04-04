@@ -1,5 +1,7 @@
 package app.controllers;
 
+import app.entities.Event;
+import io.restassured.internal.path.json.JSONAssertion;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -85,5 +87,22 @@ public class EventControllerTests {
             .then()
             .statusCode(200);
 
+    }
+
+    @Test
+    void createEvent(){
+
+        String requestBody = "{\"title1\": \"startTime\": \"description\"}";
+        RestAssured.given()
+                .contentType("application/json")
+                .body(requestBody)
+                .when()
+                .put("/event/createEvent")
+                .then()
+                .statusCode(200);
+
+
+        String actual = "{\"title\":\"title1\",\"startTime\":\"startTime\",\"description\":\"description\"}";
+        
     }
 }

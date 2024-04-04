@@ -60,20 +60,20 @@ public class Event {
     private Set<User> users = new HashSet<>();
 
 
-//    public Event(String title, String startTime, String description, LocalDate dateOfEvent, int durationInHours, int maxNumberOfStudents, String locationOfEvent, String instructor, double price, String category, String image, Status status) {
-//        this.title = title;
-//        this.startTime = startTime;
-//        this.description = description;
-//        this.dateOfEvent = dateOfEvent;
-//        this.durationInHours = durationInHours;
-//        this.maxNumberOfStudents = maxNumberOfStudents;
-//        this.locationOfEvent = locationOfEvent;
-//        this.instructor = instructor;
-//        this.price = price;
-//        this.category = category;
-//        this.image = image;
-//        this.status = status;
-//    }
+    public Event(String title, String startTime, String description, LocalDate dateOfEvent, int durationInHours, int maxNumberOfStudents, String locationOfEvent, String instructor, double price, String category, String image, Status status) {
+        this.title = title;
+        this.startTime = startTime;
+        this.description = description;
+        this.dateOfEvent = dateOfEvent;
+        this.durationInHours = durationInHours;
+        this.maxNumberOfStudents = maxNumberOfStudents;
+        this.locationOfEvent = locationOfEvent;
+        this.instructor = instructor;
+        this.price = price;
+        this.category = category;
+        this.image = image;
+        this.status = status;
+    }
 
     @PrePersist
     private void eventCreatedAt() throws RuntimeException{
