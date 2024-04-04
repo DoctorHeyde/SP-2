@@ -61,16 +61,22 @@ public class Routes {
             before(securityController.authenticate());
             path("/users", () -> {
                 get(userController.getAllUsers(), SecurityRoles.ADMIN);
-
+                delete("/delete/{id}", userController.deleteUser(), SecurityRoles.ADMIN,SecurityRoles.INSTRUCTOR,SecurityRoles.STUDENT,SecurityRoles.USER);
             });
-            before(securityController.authenticate());
+
             path("/events", () -> {
                 get(eventController.getAllEvents(), SecurityRoles.ADMIN, SecurityRoles.INSTRUCTOR);
                 put("/{id}", eventController.updateEvent(), SecurityRoles.ADMIN, SecurityRoles.INSTRUCTOR);
             });
+
             before(securityController.authenticate());
             path("/resetUserPassword", () -> {
                 put(userController.resetPassword(), SecurityRoles.ADMIN, SecurityRoles.STUDENT, SecurityRoles.INSTRUCTOR);
+            });
+
+            before(securityController.authenticate());
+            path("/registrations", () -> {
+                get("/{id}", eventController.getRegistrationsToEvent(), SecurityRoles.INSTRUCTOR);
             });
         };
     }
@@ -78,6 +84,9 @@ public class Routes {
     public EndpointGroup unsecuredRoutes(){
         return () -> {
             get("/events/{id}", eventController.getEventById(), SecurityRoles.ANYONE);
+            get("/events/category/{category}", eventController.getEventByCategory(), SecurityRoles.ANYONE);
+            get("/events/status/{status}", eventController.getEventByStatus(), SecurityRoles.ANYONE);
+            get("/registration/{userid}/{eventid}", eventController.getSingleRegistrationById(), SecurityRoles.ANYONE);
         };
     }
 }

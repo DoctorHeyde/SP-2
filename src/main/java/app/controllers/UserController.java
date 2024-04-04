@@ -7,6 +7,7 @@ import app.exceptions.EntityNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import app.dtos.UserDTO;
+import app.entities.User;
 import app.persistance.UserDAO;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.javalin.http.Handler;
@@ -53,4 +54,20 @@ public class UserController {
             }
         };
     }
+
+    public Handler deleteUser() {
+        return ctx -> {
+            String userId = ctx.pathParam("id");
+            UserDTO user = ctx.attribute("user");
+            if(!userId.equals(user.getEmail())){
+                ctx.status(HttpStatus.FORBIDDEN).json(objectMapper.createObjectNode().put("msg","Delete not allowed"));
+                return;
+            }
+            
+            userDAO.deleteUser(userDAO.getById(user.getEmail()));
+            ctx.status(HttpStatus.NO_CONTENT);
+        };
+    }
+    
 }
+
