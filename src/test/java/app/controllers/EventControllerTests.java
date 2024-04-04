@@ -19,7 +19,6 @@ import app.config.ApplicationConfig;
 import app.config.HibernateConfig;
 import app.dtos.EventDTO;
 import app.dtos.TokenDTO;
-import app.dtos.UserDTO;
 import app.entities.Event;
 import app.utils.Routes;
 import app.utils.TestUtils;
