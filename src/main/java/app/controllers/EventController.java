@@ -48,7 +48,7 @@ public class EventController {
         return ctx -> {
 
             UserDTO user = ctx.attribute("user");
-            List<Event> events = eventDAO.getAllEvents();
+            List<Event> events = eventDAO.getAll();
             if(user.hasRole("ADMIN")){
                 String json = objectMapper.writeValueAsString(events.stream().map(e -> new EventDTO(e)).collect(Collectors.toList()));
                 System.out.println(json);

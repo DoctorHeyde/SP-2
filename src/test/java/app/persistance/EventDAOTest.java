@@ -87,7 +87,7 @@ public class EventDAOTest {
     @Test
     void testGetAllEvents() {
         try (EntityManager em = emfTest.createEntityManager()) {
-            assertEquals(4, eventdao.getAllEvents().size());
+            assertEquals(4, eventdao.getAll().size());
         }
     }
 

@@ -37,17 +37,13 @@ public class EventDAO extends ADAO<Event, Integer> {
         }
     }
 
-    public List<Event> getAllEvents() {
+    @Override
+    public List<Event> getAll() {
         try (EntityManager em = emf.createEntityManager()) {
             return em.createQuery("From Event e", Event.class).getResultList();
         }
     }
 
-    @Override
-    public List<Event> getAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAll'");
-    }
 
     @Override
     public Event getById(Integer id) {
@@ -86,6 +82,7 @@ public class EventDAO extends ADAO<Event, Integer> {
         }
     }
     
+    @Override
     public Event update(Event updatedEvent) {
 
         try(var em = emf.createEntityManager()){
