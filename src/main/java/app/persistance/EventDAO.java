@@ -10,6 +10,7 @@ import app.entities.Status;
 import app.entities.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.TypedQuery;
 
 public class EventDAO extends ADAO<Event, Integer> {
     private static EntityManagerFactory emf;
@@ -81,6 +82,20 @@ public class EventDAO extends ADAO<Event, Integer> {
         }
     }
 
+    public List<Event> getEventByCategory(String category) {
+        try(var em = emf.createEntityManager()){
+            TypedQuery<Event> query = em.createQuery("SELECT e FROM Event e WHERE e.category = :category", Event.class).setParameter("category", category);
+            return query.getResultList();
+        }
+    }
+
+    public List<Event> getEventByStatus(Status status) {
+        try(var em = emf.createEntityManager()){
+            TypedQuery<Event> query = em.createQuery("SELECT e FROM Event e WHERE e.status = :status", Event.class).setParameter("status", status);
+            return query.getResultList();
+        }
+    }
+    
     public Event updateEvent(Event updatedEvent) {
 
         try(var em = emf.createEntityManager()){

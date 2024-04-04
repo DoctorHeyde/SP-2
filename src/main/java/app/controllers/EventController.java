@@ -93,6 +93,25 @@ public class EventController {
         };
     }
 
+    public Handler getEventByCategory() {
+        return ctx -> {
+            String category = ctx.pathParam("category");
+            List<Event> events = eventDAO.getEventByCategory(category);
+
+            String json = objectMapper.writeValueAsString(events.stream().map(e -> new EventDTO(e)).collect(Collectors.toList()));
+            ctx.status(HttpStatus.OK).json(json);
+        };
+    }
+    
+    public Handler getEventByStatus() {
+        return ctx -> {
+            Status status = Status.valueOf(ctx.pathParam("status").toUpperCase());
+            List<Event> events = eventDAO.getEventByStatus(status);
+        
+            String json = objectMapper.writeValueAsString(events.stream().map(e -> new EventDTO(e)).collect(Collectors.toList()));
+            ctx.status(HttpStatus.OK).json(json);
+        };
+    }
     public Handler getRegistrationsToEvent() {
         return ctx -> {
             int eventId = Integer.parseInt(ctx.pathParam("id"));
