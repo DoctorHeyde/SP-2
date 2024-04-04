@@ -49,7 +49,7 @@ public class EventDAO extends ADAO<Event, Integer> {
     }
 
     @Override
-    public Event getByID(Integer id) {
+    public Event getById(Integer id) {
         try (EntityManager em = emf.createEntityManager()) {
             return em.find(Event.class, id);
         }
@@ -57,8 +57,11 @@ public class EventDAO extends ADAO<Event, Integer> {
 
     @Override
     public void update(Event t) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        try(var em = emf.createEntityManager()){
+            em.getTransaction().begin();
+            em.merge(t);
+            em.getTransaction().commit();
+        }
     }
 
 
@@ -66,13 +69,6 @@ public class EventDAO extends ADAO<Event, Integer> {
         try (EntityManager em = emf.createEntityManager()) {
             var query = em.createQuery("select a from Event a where a.status = :status").setParameter("status", Status.UPCOMING);
             return query.getResultList();
-        }
-    }
-
-    public Event getEventById(int id) {
-        try (EntityManager em = emf.createEntityManager()) {
-            return em.find(Event.class, id);
-
         }
     }
 

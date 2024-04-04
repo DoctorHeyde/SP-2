@@ -52,6 +52,7 @@ public class TestUtils {
         try (EntityManager em = emfTest.createEntityManager()) {
             em.getTransaction().begin();
             em.createQuery("DELETE FROM Event e").executeUpdate();
+            em.createNativeQuery("ALTER SEQUENCE event_id_seq RESTART WITH 1").executeUpdate();
             
             Event e1 = new Event("title1", "startTime", "description", LocalDate.now(), 100, 10, "locationOfEvent", "instructor", 100d, "category", "image", Status.ACTIVE);
             Event e2 = new Event("title2", "startTime", "description", LocalDate.now(), 100, 10, "locationOfEvent", "instructor", 100d, "category", "image", Status.ACTIVE);
