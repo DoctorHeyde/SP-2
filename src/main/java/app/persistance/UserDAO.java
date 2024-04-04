@@ -58,6 +58,7 @@ public class UserDAO implements IUserDAO {
 
             if (user == null)
                 throw new EntityNotFoundException("No user found with email: " + email);
+
             if (!user.verifyPassword(password))
                 throw new EntityNotFoundException("Wrong password");
 

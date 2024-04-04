@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 
 import app.entities.User;
 import app.exceptions.EntityNotFoundException;
+import app.utils.TokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import app.dtos.UserDTO;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.javalin.http.Handler;
 import io.javalin.http.HttpStatus;
 import jakarta.persistence.EntityManagerFactory;
+import app.entities.Role;
 
 
 public class UserController {
@@ -40,12 +42,39 @@ public class UserController {
             try {
                 UserDTO userDTO = ctx.bodyAsClass(UserDTO.class);
 
+                String header = ctx.header("Authorization");
+
+                String token = header.split(" ")[1];
+
+                UserDTO verifiedTokenUser = TokenUtil.verifyToken(token);
+
+
+                ctx.attribute("user", verifiedTokenUser);
+
                 User verifiedUserEntity = userDAO.verifyUser(userDTO.getEmail(), userDTO.getPassword());
 
-                verifiedUserEntity.setNewPassword(userDTO.getNewPassword());
-                userDAO.updateUser(verifiedUserEntity);
+                boolean admin = false;
 
-                ctx.status(201).json("Password has been reset");
+
+                for (Role role : verifiedUserEntity.getRoles()){
+
+                    if(verifiedUserEntity.getRoles().equals("ADMIN")){
+                        admin = true;
+                    }
+                }
+
+                if(admin){
+                    verifiedUserEntity.setNewPassword(userDTO.getNewPassword());
+                    userDAO.updateUser(verifiedUserEntity);
+
+                    ctx.status(201).json("Password has been reset");
+                }
+
+
+
+
+
+
 
             } catch (EntityNotFoundException e) {
 
