@@ -81,6 +81,7 @@ public class Routes {
         return () -> {
             get("/events/{id}", eventController.getEventById(), SecurityRoles.ANYONE);
             get("/events/category/{category}", eventController.getEventByCategory(), SecurityRoles.ANYONE);
+            get("/events/status/{status}", eventController.getEventByStatus(), SecurityRoles.ANYONE);
         };
     }
 }

@@ -92,4 +92,11 @@ public class EventDAO extends ADAO<Event, Integer> {
             return query.getResultList();
         }
     }
+
+    public List<Event> getEventByStatus(Status status) {
+        try(var em = emf.createEntityManager()){
+            TypedQuery<Event> query = em.createQuery("SELECT e FROM Event e WHERE e.status = :status", Event.class).setParameter("status", status);
+            return query.getResultList();
+        }
+    }
 }

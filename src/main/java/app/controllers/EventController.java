@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import app.dtos.EventDTO;
 import app.dtos.UserDTO;
 import app.entities.Event;
+import app.entities.Status;
 import app.entities.User;
 import app.persistance.EventDAO;
 import app.persistance.UserDAO;
@@ -97,6 +98,16 @@ public class EventController {
             String category = ctx.pathParam("category");
             List<Event> events = eventDAO.getEventByCategory(category);
 
+            String json = objectMapper.writeValueAsString(events.stream().map(e -> new EventDTO(e)).collect(Collectors.toList()));
+            ctx.status(HttpStatus.OK).json(json);
+        };
+    }
+    
+    public Handler getEventByStatus() {
+        return ctx -> {
+            Status status = Status.valueOf(ctx.pathParam("status").toUpperCase());
+            List<Event> events = eventDAO.getEventByStatus(status);
+        
             String json = objectMapper.writeValueAsString(events.stream().map(e -> new EventDTO(e)).collect(Collectors.toList()));
             ctx.status(HttpStatus.OK).json(json);
         };

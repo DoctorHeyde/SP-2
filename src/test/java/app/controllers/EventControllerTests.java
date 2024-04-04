@@ -16,6 +16,7 @@ import app.config.HibernateConfig;
 import app.dtos.EventDTO;
 import app.dtos.TokenDTO;
 import app.entities.Event;
+import app.entities.Status;
 import app.entities.User;
 import app.utils.Routes;
 import app.utils.TestUtils;
@@ -28,6 +29,7 @@ import jakarta.persistence.EntityManagerFactory;
 
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -180,6 +182,20 @@ public class EventControllerTests {
             .as(EventDTO[].class)
             ;
         assertEquals(events.size(), eventsByCategory.length);
+        
+    }
+
+    @Test
+    void getEventByStatus(){
+        Map<String,Event> activeEvents = TestUtils.getEvents(emfTest).values().stream().filter(e -> e.getStatus().equals(Status.ACTIVE)).collect(Collectors.toMap(e -> e.getTitle(), e -> e));
+        var eventsByCategory = given().when()
+            .get("/events/status/active")
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(EventDTO[].class)
+            ;
+        assertEquals(activeEvents.size(), eventsByCategory.length);
         
     }
 
