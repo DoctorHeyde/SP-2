@@ -74,6 +74,10 @@ public class Routes {
             path("/events", () -> {
                 get(eventController.getAllEvents(), SecurityRoles.ADMIN, SecurityRoles.INSTRUCTOR);
             });
+            before(securityController.authenticate());
+            path("/registrations", () -> {
+                get("/{id}", eventController.getRegistrationsToEvent(), SecurityRoles.INSTRUCTOR);
+            });
         };
     }
 

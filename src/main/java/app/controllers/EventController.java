@@ -92,5 +92,14 @@ public class EventController {
         };
     }
 
+    public Handler getRegistrationsToEvent() {
+        return ctx -> {
+            int eventId = Integer.parseInt(ctx.pathParam("id"));
+            Event event = eventDAO.getEventById(eventId);
+            String json = objectMapper.writeValueAsString(event.getUsers().stream().map(u -> new UserDTO(u)).collect(Collectors.toSet()));
+            ctx.status(HttpStatus.OK).json(json);
+        };
+    }
+
 }
 

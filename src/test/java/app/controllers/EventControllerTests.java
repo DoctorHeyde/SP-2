@@ -15,6 +15,7 @@ import app.config.ApplicationConfig;
 import app.config.HibernateConfig;
 import app.dtos.EventDTO;
 import app.dtos.TokenDTO;
+import app.dtos.UserDTO;
 import app.entities.Event;
 import app.entities.User;
 import app.utils.Routes;
@@ -164,6 +165,32 @@ public class EventControllerTests {
         LocalDate date = LocalDate.parse(dateAsString);
 
         assertThat(date, greaterThan(LocalDate.now()));
+
+    }
+
+    @Test
+    public void getRegistrationsToEvent() throws JsonMappingException, JsonProcessingException{
+        String requestBody = "{\"email\": \"instructor\",\"password\": \"instructor\"}";
+        Response logingResponse =
+            given()
+                .body(requestBody)
+            .when()
+                .post("/auth/login");
+
+        TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
+
+        int eventId = TestUtils.getEvents(emfTest).values().stream().filter(e -> e.getTitle().equals("title2")).findFirst().get().getId();
+
+        Response getResponse = given()
+            .header(header)
+        .when()
+            .get("/registrations/" + eventId)
+            ;
+        
+        UserDTO[] users = objectMapper.readValue(getResponse.asString(), UserDTO[].class);
+        assertEquals(1, users.length);
+        assertEquals("user", users[0].getName());
 
     }
 
