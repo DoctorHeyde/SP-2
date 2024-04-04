@@ -111,5 +111,29 @@ public class EventController {
 
         };
     }
+
+    public Handler getSingleRegistrationById() {
+        return ctx -> {
+            var tmp = ctx.pathParamMap();
+            System.out.println(tmp);
+            String userId = ctx.pathParam("userid");
+            int evetnId = Integer.parseInt(ctx.pathParam("eventid"));
+            
+            User user = userDAO.getByID(userId);
+            Event event = eventDAO.getByID(evetnId);
+
+            if (user != null && event != null) {
+                ctx.status(HttpStatus.FOUND).json(
+                    objectMapper.createObjectNode().put("msg", "Registration found")
+                );
+                
+                return;
+            }
+            ctx.status(HttpStatus.NOT_FOUND).json(
+                objectMapper.createObjectNode().put("msg", "Registration not found")
+            );
+
+        };
+    }
 }
 
