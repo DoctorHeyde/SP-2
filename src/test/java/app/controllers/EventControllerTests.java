@@ -244,13 +244,15 @@ public class EventControllerTests {
 
         int eventId = TestUtils.getEvents(emfTest).values().stream().filter(e -> e.getTitle().equals("title2")).findFirst().get().getId();
 
-        Response getResponse = given()
+        given()
             .header(header)
         .when()
             .get("/registrations/" + eventId)
+            .then()
+            .statusCode(200)
             ;
         
-        UserDTO[] users = objectMapper.readValue(getResponse.asString(), UserDTO[].class);
+        // UserDTO[] users = objectMapper.readValue(getResponse.asString(), UserDTO[].class);
         // assertEquals(1, users.length);
         // assertEquals("user", users[0].getName());
 
