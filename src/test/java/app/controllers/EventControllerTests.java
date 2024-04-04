@@ -36,8 +36,6 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static io.restassured.RestAssured.given;
-
 public class EventControllerTests {
     private static ApplicationConfig appConfig;
     private static final String BASE_URL = "http://localhost:7777/api";
