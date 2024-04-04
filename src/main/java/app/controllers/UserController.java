@@ -49,8 +49,8 @@ public class UserController {
                 String token = header.split(" ")[1];
                 UserDTO verifiedTokenUser = TokenUtil.verifyToken(token);
 
-                // Checking if the email entered when resetting password (the above email) actually is the same
-                // as the email of the logged in user who wants to reset password
+                // Checking if the email entered when resetting password actually is the same
+                // as the email of the logged in user
                 if (verifiedTokenUser.getEmail().equalsIgnoreCase(userDTO.getEmail())) {
 
                     // Verifying the password entered by the user when resetting the password
