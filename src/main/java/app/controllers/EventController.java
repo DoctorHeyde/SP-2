@@ -39,6 +39,8 @@ public class EventController {
             User user = userDAO.getById(email);
             Event eventObj = eventDAO.getById(eventID);
             EventDAO.addUserToEvent(eventObj, user);
+
+            // TODO: missing response, a statuscode or something
         };
     }
 
@@ -80,6 +82,8 @@ public class EventController {
             User user = userDAO.getById(email);
             Event eventObj = eventDAO.getById(eventID);
             EventDAO.cancelRegistration(eventObj, user);
+
+            // TODO: missing response, a statuscode or something
         };
     }
     public Handler getUpcomingEvents() {
