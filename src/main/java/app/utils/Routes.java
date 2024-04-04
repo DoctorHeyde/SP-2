@@ -53,16 +53,6 @@ public class Routes {
             });
         };
     }
-/*
-    public EndpointGroup eventResourcesRoutes() {
-        return () -> {
-            path("/event", () -> {
-
-            });
-        };
-    }
-
- */
 
     public EndpointGroup securedRoutes() {
         return () -> {

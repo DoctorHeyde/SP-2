@@ -104,7 +104,11 @@ public class EventController {
             updatedEvent.setId(id);
             Event updatedEventNowInDB = eventDAO.updateEvent(updatedEvent);
 
-            ctx.status(201).json("Event after update: " + updatedEventNowInDB);
+            EventDTO updatedEventInDBAsDTO = new EventDTO(updatedEventNowInDB);
+            String json = objectMapper.writeValueAsString(updatedEventInDBAsDTO);
+
+            ctx.status(201).json("Event after update: " + json);
+
         };
     }
 }
