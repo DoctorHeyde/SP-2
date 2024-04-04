@@ -36,7 +36,7 @@ public class EventController {
             
             String email = jsonNode.get("email").asText();
             Integer eventID = jsonNode.get("id").asInt();
-            User user = userDAO.getByID(email);
+            User user = userDAO.getById(email);
             Event eventObj = eventDAO.getById(eventID);
             EventDAO.addUserToEvent(eventObj, user);
         };
@@ -77,7 +77,7 @@ public class EventController {
             JsonNode jsonNode = mapper.readTree(jsonBody);
             String email = jsonNode.get("email").asText();
             Integer eventID = jsonNode.get("id").asInt();
-            User user = userDAO.getByID(email);
+            User user = userDAO.getById(email);
             Event eventObj = eventDAO.getById(eventID);
             EventDAO.cancelRegistration(eventObj, user);
         };
@@ -139,8 +139,8 @@ public class EventController {
             String userId = ctx.pathParam("userid");
             int evetnId = Integer.parseInt(ctx.pathParam("eventid"));
             
-            User user = userDAO.getByID(userId);
-            Event event = eventDAO.getByID(evetnId);
+            User user = userDAO.getById(userId);
+            Event event = eventDAO.getById(evetnId);
 
             if (user != null && event != null) {
                 ctx.status(HttpStatus.FOUND).json(
