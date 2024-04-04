@@ -25,6 +25,7 @@ public class Main {
                 .setRoute(routes.securityResources())
                 .setRoute(routes.testResources())
                 .setRoute(routes.eventResources())
+                .setRoute(routes.securedRoutes())
                 //Add more endpoints here
                 .checkSecurityRoles();
     }

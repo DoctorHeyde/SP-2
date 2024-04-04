@@ -1,7 +1,11 @@
 package app.controllers;
 
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import app.entities.Status;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -201,4 +205,59 @@ public class EventControllerTests {
 
     }
 
+    @Test
+    void updateEvent() {
+
+        String requestLoginBody = "{\"email\": \"instructor\",\"password\": \"instructor\"}";
+
+        TokenDTO token = given()
+                .contentType("application/json")
+                .body(requestLoginBody)
+                .when()
+                .post("/auth/login")
+                .then()
+                .extract()
+                .as(TokenDTO.class);
+
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
+
+        String updateBody = "{\"title\": \"title4\",\"startTime\": \"18:00 pm\", \"description\": \"Football practice\"" +
+                ",\"dateOfEvent\": \"2024-04-04\",\"durationInHours\": "+ 2 +",\"maxNumberOfStudents\": " + 44 +
+                ", \"locationOfEvent\": \"KFUM Boldkblub Kbh\",\"instructor\": \"instructor\",\"price\": " + 20d +
+                ",\"category\": \"Sport\",\"image\": \"image\",\"status\": \"UPCOMING\"}";
+
+        given()
+                .when()
+                .header(header)
+                .body(updateBody)
+                /*.body(new Event("title4", "startTime", "description",
+                        LocalDate.of(2024, 04, 29),
+                        100, 44,
+                        "locationOfEvent", "instructor", 20d, "Sport",
+                        "image", Status.UPCOMING))
+
+                 */
+                .when()
+                .request("PUT", "events/4")
+                .then()
+                .statusCode(201);
+
+        given()
+                .when()
+                .get("events/4")
+                .then()
+                .statusCode(200)
+                .body("size()", greaterThan(0))
+                .assertThat()
+                .body("id", is(4))
+                .assertThat()
+                .body("category", equalTo("Sport"))
+                .body("maxNumberOfStudents", is(44))
+                .body("title", equalTo("title4"));
+
+    }
 }
+
+
+
+

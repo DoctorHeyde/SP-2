@@ -80,4 +80,18 @@ public class EventDAO extends ADAO<Event, Integer> {
             em.getTransaction().commit();
         }
     }
+
+    public Event updateEvent(Event updatedEvent) {
+
+        try(var em = emf.createEntityManager()){
+
+            em.getTransaction().begin();
+            em.merge(updatedEvent);
+            em.getTransaction().commit();
+
+            Event eventUpdatedInDb = em.find(Event.class, updatedEvent.getId());
+
+            return eventUpdatedInDb;
+        }
+    }
 }
