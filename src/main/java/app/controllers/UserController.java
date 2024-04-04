@@ -2,6 +2,9 @@ package app.controllers;
 
 import java.util.stream.Collectors;
 
+import app.dtos.EventDTO;
+import app.entities.Event;
+import app.entities.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import app.dtos.UserDTO;
@@ -27,5 +30,18 @@ public class UserController {
             ctx.status(HttpStatus.OK).json(json);
         };
     }
-    
+
+    public Handler updateUser() {
+        return ctx -> {
+
+            UserDTO updateUserAsDTO = ctx.bodyAsClass(UserDTO.class);
+
+            User updateUser = userDAO.getByID(updateUserAsDTO.getEmail());
+
+            userDAO.updateUser(updateUser);
+            ctx.status(201).json("User has ");
+
+
+        };
+    }
 }

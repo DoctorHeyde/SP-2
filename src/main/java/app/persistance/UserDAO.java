@@ -112,4 +112,14 @@ public class UserDAO implements IUserDAO {
             return em.find(User.class, id);
         }
     }
+
+    public void updateUser(User user){
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            em.merge(user);
+            em.getTransaction().commit();
+        }
+
+    }
+
 }
