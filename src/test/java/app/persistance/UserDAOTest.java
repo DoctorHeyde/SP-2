@@ -87,7 +87,7 @@ public class UserDAOTest {
 
         userDAO.updateUser(expectedUser);
 
-        User actual = userDAO.getByID("admin");
+        User actual = userDAO.getById("admin");
 
         assertEquals(expectedUser.getName(), actual.getName());
         assertEquals(expectedUser.getPhoneNumber(), actual.getPhoneNumber());
