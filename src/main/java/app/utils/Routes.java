@@ -59,7 +59,7 @@ public class Routes {
             before(securityController.authenticate());
             path("/users", () -> {
                 get(userController.getAllUsers(), SecurityRoles.ADMIN);
-                put("/update", userController.updateUser(), SecurityRoles.ADMIN, SecurityRoles.INSTRUCTOR);
+                put("/{email}", userController.updateUser(), SecurityRoles.ADMIN, SecurityRoles.INSTRUCTOR);
             });
             before(securityController.authenticate());
             path("/events", () -> {

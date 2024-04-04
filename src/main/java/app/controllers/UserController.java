@@ -39,7 +39,7 @@ public class UserController {
             User updateUser = userDAO.getByID(updateUserAsDTO.getEmail());
 
             userDAO.updateUser(updateUser);
-            ctx.status(201).json("User has ");
+            ctx.status(201).json("User has been updated ");
 
 
         };
