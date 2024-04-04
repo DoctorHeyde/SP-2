@@ -11,6 +11,4 @@ public interface IUserDAO {
     public User verifyUser(String username, String password) throws EntityNotFoundException;
     public User addRoleToUser(String username, String role) throws EntityNotFoundException;
     public Role createRole(String role);
-
-
 }

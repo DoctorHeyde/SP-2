@@ -64,7 +64,7 @@ public class EventController {
     public Handler getEventById(){
         return ctx -> {
             int id = Integer.parseInt(ctx.pathParam("id"));
-            EventDTO eventDTO = new EventDTO(eventDAO.getEventById(id));
+            EventDTO eventDTO = new EventDTO(eventDAO.getByID(id));
             String json = objectMapper.writeValueAsString(eventDTO);
             ctx.status(HttpStatus.OK).json(json);
         };
@@ -110,6 +110,16 @@ public class EventController {
         
             String json = objectMapper.writeValueAsString(events.stream().map(e -> new EventDTO(e)).collect(Collectors.toList()));
             ctx.status(HttpStatus.OK).json(json);
+        };
+    }
+
+    public Handler cancelEvent() {
+        return ctx -> {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            Event event = eventDAO.getByID(id);
+            event.setStatus(Status.CANCELED);
+            eventDAO.update(event);
+            ctx.status(200);
         };
     }
 

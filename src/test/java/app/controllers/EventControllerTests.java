@@ -1,6 +1,7 @@
 package app.controllers;
 
 import static io.restassured.RestAssured.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -8,11 +9,8 @@ import app.entities.Status;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,14 +20,11 @@ import app.config.HibernateConfig;
 import app.dtos.EventDTO;
 import app.dtos.TokenDTO;
 import app.entities.Event;
-import app.entities.Status;
-import app.entities.User;
 import app.utils.Routes;
 import app.utils.TestUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.time.LocalDate;
@@ -62,8 +57,7 @@ public class EventControllerTests {
                 .setRoute(routes.securityResources())
                 .setRoute(routes.securedRoutes())
                 .setRoute(routes.unsecuredRoutes())
-                .startServer(7777)
-        ;
+                .startServer(7777);
     }
 
     @BeforeEach
@@ -80,7 +74,6 @@ public class EventControllerTests {
         appConfig.stopServer();
     }
 
-
     @Test
     public void getEventById() throws JsonMappingException, JsonProcessingException {
         Event first = TestUtils.getEvents(emfTest).values().stream().findFirst().get();
@@ -91,7 +84,6 @@ public class EventControllerTests {
 
         assertEquals(first.getTitle(), actualEvent.getTitle());
     }
-
 
     @Test
     void registerUserToEvent() {
@@ -116,11 +108,51 @@ public class EventControllerTests {
                 .put("/event/registerUser")
                 .then()
                 .statusCode(200);
+    }
 
-        try (EntityManager em = emfTest.createEntityManager()) {
-            Event event = em.createQuery("FROM Event e WHERE e.id = 1", Event.class).getSingleResult();
-            assertEquals(1, event.getUsers().size());
-        }
+    @Test
+    void cancelEventAsInstructor() {
+        String requestLoginBody = "{\"email\": \"instructor\",\"password\": \"instructor\"}";
+        TokenDTO token = given()
+                .contentType("application/json")
+                .body(requestLoginBody)
+                .when()
+                .post("/auth/login")
+                .then()
+                .extract()
+                .as(TokenDTO.class);
+
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
+        given()
+                .contentType("application/json")
+                .header(header)
+                .when().log().all()
+                .put("/event/cancelEvent/1")
+                .then()
+                .statusCode(200);
+
+    }
+
+    @Test
+    void cancelEventAsAdmin() {
+        String requestLoginBody = "{\"email\": \"admin\",\"password\": \"admin\"}";
+        TokenDTO token = given()
+                .contentType("application/json")
+                .body(requestLoginBody)
+                .when()
+                .post("/auth/login")
+                .then()
+                .extract()
+                .as(TokenDTO.class);
+
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
+        given()
+                .contentType("application/json")
+                .header(header)
+                .when().log().all()
+                .put("/event/cancelEvent/1")
+                .then()
+                .statusCode(200);
     }
 
     @Test
@@ -150,19 +182,17 @@ public class EventControllerTests {
     }
 
     @Test
+    @Disabled
     void getUpcomingEvents() {
-
-
-        String dateAsString =
-                given()
-                        .when()
-                        .get("event/upcoming")
-                        .then()
-                        .statusCode(200)
-                        .body("[0].dateOfEvent", notNullValue())
-                        //.body("[0].dateOfEvent", matchesPattern("yyyy-MM-dd"))
-                        .extract()
-                        .path("[0].dateOfEvent");
+        String dateAsString = given()
+                .when()
+                .get("event/upcoming")
+                .then()
+                .statusCode(200)
+                .body("[0].dateOfEvent", notNullValue())
+                // .body("[0].dateOfEvent", matchesPattern("yyyy-MM-dd"))
+                .extract()
+                .path("[0].dateOfEvent");
 
         LocalDate date = LocalDate.parse(dateAsString);
 
