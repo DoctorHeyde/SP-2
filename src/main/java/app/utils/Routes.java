@@ -79,6 +79,7 @@ public class Routes {
             get("/events/{id}", eventController.getEventById(), SecurityRoles.ANYONE);
             get("/events/category/{category}", eventController.getEventByCategory(), SecurityRoles.ANYONE);
             get("/events/status/{status}", eventController.getEventByStatus(), SecurityRoles.ANYONE);
+            get("/registration/{userid}/{eventid}", eventController.getSingleRegistrationById(), SecurityRoles.ANYONE);
         };
     }
 }

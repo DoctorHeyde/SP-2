@@ -107,7 +107,7 @@ public class UserDAO implements IUserDAO {
         }       
     }
 
-    public User getByID(String id) {
+    public User getById(String id) {
         try (EntityManager em = emf.createEntityManager()) {
             return em.find(User.class, id);
         }

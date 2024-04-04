@@ -23,6 +23,7 @@ import app.dtos.UserDTO;
 import app.entities.Event;
 import app.utils.Routes;
 import app.utils.TestUtils;
+import io.javalin.http.HttpStatus;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
@@ -304,6 +305,16 @@ public class EventControllerTests {
                 .body("maxNumberOfStudents", is(44))
                 .body("title", equalTo("title4"));
 
+    }
+
+    @Test
+    public void getSingleRegistrationById(){
+        Event event = TestUtils.getEvents(emfTest).values().stream().filter(e -> e.getTitle().equals("title2")).findFirst().get();
+        given().when()
+        .get("/registration/user/" + event.getId())
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.FOUND.getCode());
     }
 }
 
