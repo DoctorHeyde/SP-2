@@ -53,9 +53,13 @@ public class UserDAO implements IUserDAO {
     public User verifyUser(String email, String password) throws EntityNotFoundException {
 
         try (EntityManager em = emf.createEntityManager()) {
+
             User user = em.find(User.class, email);
 
-            user.getRoles().size();
+            if (user == null)
+                throw new EntityNotFoundException("No user found with email: " + email);
+            if (!user.verifyPassword(password))
+                throw new EntityNotFoundException("Wrong password");
 
             var query = em.createQuery("SELECT a FROM Event a JOIN User u ON u.email = :email")
                     .setParameter("email", user.getEmail());
@@ -66,10 +70,7 @@ public class UserDAO implements IUserDAO {
                 user.setEvents(eventRegistrationOfUser.stream().collect(Collectors.toSet()));
             }
 
-            if (user == null)
-                throw new EntityNotFoundException("No user found with email: " + email);
-            if (!user.verifyPassword(password))
-                throw new EntityNotFoundException("Wrong password");
+            user.getRoles().size();
 
             return user;
         }

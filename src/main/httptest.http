@@ -17,7 +17,7 @@ Content-Type: application/json
 
 {
   "email": "finn@email.dk",
-  "password": "4321"
+  "password": "1234"
 
 }
 
@@ -53,8 +53,8 @@ Content-Type: application/json
 
 {
   "email": "finn@email.dk",
-  "password": "1234",
-  "newPassword": "4321"
+  "password": "4321",
+  "newPassword": "1234"
 }
 
 
