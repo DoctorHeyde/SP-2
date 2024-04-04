@@ -70,7 +70,7 @@ public class Routes {
             });
             before(securityController.authenticate());
             path("/resetUserPassword", () -> {
-                put(securityController.resetPassword(), SecurityRoles.ADMIN, SecurityRoles.STUDENT, SecurityRoles.INSTRUCTOR);
+                put(userController.resetPassword(), SecurityRoles.ADMIN, SecurityRoles.STUDENT, SecurityRoles.INSTRUCTOR);
             });
         };
     }

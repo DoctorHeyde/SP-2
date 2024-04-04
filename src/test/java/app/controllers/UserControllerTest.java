@@ -102,5 +102,35 @@ public class UserControllerTest {
         for(EventDTO event : events){
             assertEquals(event.getTitle(), allEvents.get(event.getTitle()).getTitle());
         }
-    }    
+    }
+
+
+    @Test
+    void resetPassword(){
+
+        String requestLoginBody = "{\"email\": \"instructor\",\"password\": \"instructor\"}";
+
+        TokenDTO token = given()
+                .contentType("application/json")
+                .body(requestLoginBody)
+                .when()
+                .post("/auth/login")
+                .then()
+                .extract()
+                .as(TokenDTO.class);
+
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
+
+        String updateBody = "{\"email\": \"instructor\", \"password\": \"instructor\", " +
+                "\"newPassword\": \"instructorChanged\"}";
+
+        given()
+                .when()
+                .header(header)
+                .body(updateBody)
+                .when()
+                .request("PUT", "resetUserPassword")
+                .then()
+                .statusCode(201);
+    }
 }

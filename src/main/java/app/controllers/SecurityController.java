@@ -132,27 +132,4 @@ public class SecurityController implements ISecurityController {
 
         };
     }
-
-    public Handler resetPassword() {
-        return ctx -> {
-
-            ObjectNode returnObject = objectMapper.createObjectNode();
-
-            try {
-                UserDTO userDTO = ctx.bodyAsClass(UserDTO.class);
-
-                User verifiedUserEntity = userDAO.verifyUser(userDTO.getEmail(), userDTO.getPassword());
-
-                verifiedUserEntity.setNewPassword(userDTO.getNewPassword());
-                userDAO.updateUser(verifiedUserEntity);
-
-                ctx.status(201).json("Password has been reset");
-
-            } catch (EntityNotFoundException e) {
-
-                ctx.status(HttpStatus.NOT_FOUND);
-                ctx.json(returnObject.put("Message: ", e.getMessage()));
-            }
-        };
-    }
 }

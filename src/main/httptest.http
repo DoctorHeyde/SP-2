@@ -48,13 +48,13 @@ Content-Type: application/json
 
 ###
 PUT http://localhost:7170/api/resetUserPassword
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJMYXVyaXR6IEhhdWdlIiwibmFtZSI6IkZpbm4iLCJzdWIiOiJmaW5uQGVtYWlsLmRrIiwiZXhwIjoxNzEyMjMwNzIxLCJlbWFpbCI6ImZpbm5AZW1haWwuZGsiLCJyb2xlcyI6IixpbnN0cnVjdG9yLHVzZXIifQ.NNWShCmGgc9SIepb1qJvU_PnbP_YYFBOoGTD_TBKpKg
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJMYXVyaXR6IEhhdWdlIiwibmFtZSI6IkZpbm4iLCJzdWIiOiJmaW5uQGVtYWlsLmRrIiwiZXhwIjoxNzEyMjM2NDY5LCJlbWFpbCI6ImZpbm5AZW1haWwuZGsiLCJyb2xlcyI6IixpbnN0cnVjdG9yLHVzZXIifQ.ygdL6eEI5dOKZidxTO4EpOQgT1C2Cg-fvpSIrDs539I
 Content-Type: application/json
 
 {
   "email": "finn@email.dk",
-  "password": "4321",
-  "newPassword": "1234"
+  "password": "1234",
+  "newPassword": "4321"
 }
 
 
