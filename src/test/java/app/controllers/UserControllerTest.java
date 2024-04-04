@@ -1,5 +1,6 @@
 package app.controllers;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -124,5 +125,25 @@ public class UserControllerTest {
         Map<String, User> users = TestUtils.getUsers(emfTest);
 
         assertNull(users.get("user"));
+    }
+    
+    @Test
+    public void deleteUserWrongId() throws JsonMappingException, JsonProcessingException{
+        String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
+        Response logingResponse =
+            given()
+                .body(requestLoginBody)
+            .when()
+                .post("/auth/login");
+
+        TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
+        given()
+            .header(header)
+            .when()
+            .delete("/users/delete/" + "email")
+            .then()
+            .statusCode(HttpStatus.FORBIDDEN.getCode())
+            .body("msg", equalTo("Delete not allowed"));
     }
 }
