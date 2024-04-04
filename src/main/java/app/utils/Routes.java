@@ -42,6 +42,7 @@ public class Routes {
                 put("/registerUser", eventController.addUserToEvent(), SecurityRoles.USER);
                 put("/cancelRegistration", eventController.cancelRegistration(), SecurityRoles.USER);
                 get("/upcoming", eventController.getUpcomingEvents(), SecurityRoles.ANYONE);
+                put("/cancelEvent/{id}", eventController.cancelEvent(), SecurityRoles.INSTRUCTOR, SecurityRoles.ADMIN);
             });
         };
     }
