@@ -1,6 +1,5 @@
 package app.controllers;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -18,24 +17,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import app.utils.TestUtils;
 import app.config.ApplicationConfig;
 import app.config.HibernateConfig;
-import app.controllers.SecurityController;
 import app.dtos.EventDTO;
 import app.dtos.TokenDTO;
-import app.dtos.UserDTO;
 import app.entities.Event;
-import app.entities.User;
-import app.persistance.UserDAO;
 import app.utils.Routes;
+import app.utils.TestUtils;
 import app.utils.TokenUtil;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseBody;
-import app.config.ApplicationConfig;
 import static io.restassured.RestAssured.*;
 import jakarta.persistence.EntityManagerFactory;
 
-public class UserContrllerTest {
+public class UserControllerTest {
     private static ApplicationConfig appConfig;
     private static final String BASE_URL = "http://localhost:7777/api";
     private static EntityManagerFactory emfTest;

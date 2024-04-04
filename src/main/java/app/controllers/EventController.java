@@ -43,6 +43,7 @@ public class EventController {
 
     public Handler getAllEvents() {
         return ctx -> {
+
             UserDTO user = ctx.attribute("user");
             List<Event> events = eventDAO.getAllEvents();
             if(user.hasRole("ADMIN")){
@@ -65,6 +66,29 @@ public class EventController {
             EventDTO eventDTO = new EventDTO(eventDAO.getEventById(id));
             String json = objectMapper.writeValueAsString(eventDTO);
             ctx.status(HttpStatus.OK).json(json);
+        };
+    }
+
+    public Handler cancelRegistration() {
+        return ctx -> {
+            String jsonBody = ctx.body();
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(jsonBody);
+            String email = jsonNode.get("email").asText();
+            Integer eventID = jsonNode.get("id").asInt();
+            User user = userDAO.getByID(email);
+            Event eventObj = eventDAO.getByID(eventID);
+            EventDAO.cancelRegistration(eventObj, user);
+        };
+    }
+    public Handler getUpcomingEvents() {
+        return ctx -> {
+            List<Event> upComing = eventDAO.getUpcomingEvent();
+
+            List<EventDTO> upComingAsDTO = upComing.stream()
+                    .map(event -> new EventDTO(event.getTitle(), event.getDateOfEvent().toString())).collect(Collectors.toList());
+
+            ctx.status(200).json(upComingAsDTO);
         };
     }
 

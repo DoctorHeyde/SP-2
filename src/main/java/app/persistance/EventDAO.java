@@ -1,10 +1,12 @@
 package app.persistance;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import app.dtos.EventDTO;
 import app.entities.Event;
+import app.entities.Status;
 import app.entities.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -37,7 +39,7 @@ public class EventDAO extends ADAO<Event, Integer> {
     public List<Event> getAllEvents() {
         try (EntityManager em = emf.createEntityManager()) {
             return em.createQuery("From Event e", Event.class).getResultList();
-        }     
+        }
     }
 
     @Override
@@ -59,9 +61,27 @@ public class EventDAO extends ADAO<Event, Integer> {
         throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 
+
+    public List<Event> getUpcomingEvent() {
+        try (EntityManager em = emf.createEntityManager()) {
+            var query = em.createQuery("select a from Event a where a.status = :status").setParameter("status", Status.UPCOMING);
+            return query.getResultList();
+        }
+    }
+
     public Event getEventById(int id) {
-        try(EntityManager em = emf.createEntityManager()){
+        try (EntityManager em = emf.createEntityManager()) {
             return em.find(Event.class, id);
+
+        }
+    }
+
+    public static void cancelRegistration(Event eventObj, User user) {
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            eventObj.removeUser(user);
+            em.merge(eventObj);
+            em.getTransaction().commit();
         }
     }
 }
