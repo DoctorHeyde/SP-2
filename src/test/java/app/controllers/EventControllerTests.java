@@ -1,7 +1,10 @@
 package app.controllers;
 
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import app.entities.Status;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,17 +32,11 @@ import io.restassured.response.Response;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
-
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.matchesPattern;
 
 public class EventControllerTests {
     private static ApplicationConfig appConfig;
@@ -76,7 +73,7 @@ public class EventControllerTests {
         // Setup test database for each test
         TestUtils.createUsersAndRoles(emfTest);
         TestUtils.createEvents(emfTest);
-        TestUtils.addEventToUser(emfTest);       
+        TestUtils.addEventToUser(emfTest);
     }
 
     @AfterAll
@@ -90,13 +87,12 @@ public class EventControllerTests {
     public void getEventById() throws JsonMappingException, JsonProcessingException {
         Event first = TestUtils.getEvents(emfTest).values().stream().findFirst().get();
         Response response = given().when()
-            .get("/events/" + first.getId()).peek()
-            ;
+                .get("/events/" + first.getId()).peek();
 
         EventDTO actualEvent = objectMapper.readValue(response.body().asString(), EventDTO.class);
 
         assertEquals(first.getTitle(), actualEvent.getTitle());
-    }    
+    }
 
 
     @Test
@@ -115,48 +111,50 @@ public class EventControllerTests {
 
         String requestBody = "{\"email\": \"user\",\"id\": \"1\"}";
         RestAssured.given()
-            .contentType("application/json")
-            .header(header)
-            .body(requestBody)
-            .when()
-            .put("/event/registerUser")
-            .then()
-            .statusCode(200);
+                .contentType("application/json")
+                .header(header)
+                .body(requestBody)
+                .when()
+                .put("/event/registerUser")
+                .then()
+                .statusCode(200);
 
-        try(EntityManager em = emfTest.createEntityManager()){
+        try (EntityManager em = emfTest.createEntityManager()) {
             Event event = em.createQuery("FROM Event e WHERE e.id = 1", Event.class).getSingleResult();
             assertEquals(1, event.getUsers().size());
         }
     }
-       
+
     @Test
     void cancelRegistration() {
         String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
         TokenDTO token = RestAssured
-            .given()
-            .contentType("application/json")
+                .given()
+                .contentType("application/json")
                 .body(requestLoginBody)
-            .when()
+                .when()
                 .post("/auth/login")
                 .then()
                 .extract()
                 .as(TokenDTO.class);
 
-        Header header = new Header("Authorization", "Bearer " + token.getToken());        
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
 
         String requestBody = "{\"email\": \"user\",\"id\": \"2\"}";
         RestAssured.given()
-            .contentType("application/json")
-            .header(header)
-            .body(requestBody)
-            .when()
-            .put("/event/cancelRegistration")
-            .then()
-            .statusCode(200);
+                .contentType("application/json")
+                .header(header)
+                .body(requestBody)
+                .when()
+                .put("/event/cancelRegistration")
+                .then()
+                .statusCode(200);
     }
 
     @Test
     void getUpcomingEvents() {
+
+
         String dateAsString =
                 given()
                         .when()
@@ -202,6 +200,59 @@ public class EventControllerTests {
         
     }
 
+    @Test
+    void updateEvent() {
 
+        String requestLoginBody = "{\"email\": \"instructor\",\"password\": \"instructor\"}";
+
+        TokenDTO token = given()
+                .contentType("application/json")
+                .body(requestLoginBody)
+                .when()
+                .post("/auth/login")
+                .then()
+                .extract()
+                .as(TokenDTO.class);
+
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
+
+        String updateBody = "{\"title\": \"title4\",\"startTime\": \"18:00 pm\", \"description\": \"Football practice\"" +
+                ",\"dateOfEvent\": \"2024-04-04\",\"durationInHours\": "+ 2 +",\"maxNumberOfStudents\": " + 44 +
+                ", \"locationOfEvent\": \"KFUM Boldkblub Kbh\",\"instructor\": \"instructor\",\"price\": " + 20d +
+                ",\"category\": \"Sport\",\"image\": \"image\",\"status\": \"UPCOMING\"}";
+
+        given()
+                .when()
+                .header(header)
+                .body(updateBody)
+                /*.body(new Event("title4", "startTime", "description",
+                        LocalDate.of(2024, 04, 29),
+                        100, 44,
+                        "locationOfEvent", "instructor", 20d, "Sport",
+                        "image", Status.UPCOMING))
+
+                 */
+                .when()
+                .request("PUT", "events/4")
+                .then()
+                .statusCode(201);
+
+        given()
+                .when()
+                .get("events/4")
+                .then()
+                .statusCode(200)
+                .body("size()", greaterThan(0))
+                .assertThat()
+                .body("id", is(4))
+                .assertThat()
+                .body("category", equalTo("Sport"))
+                .body("maxNumberOfStudents", is(44))
+                .body("title", equalTo("title4"));
+
+    }
 }
+
+
+
 

@@ -53,16 +53,6 @@ public class Routes {
             });
         };
     }
-/*
-    public EndpointGroup eventResourcesRoutes() {
-        return () -> {
-            path("/event", () -> {
-
-            });
-        };
-    }
-
- */
 
     public EndpointGroup securedRoutes() {
         return () -> {
@@ -74,6 +64,7 @@ public class Routes {
             before(securityController.authenticate());
             path("/events", () -> {
                 get(eventController.getAllEvents(), SecurityRoles.ADMIN, SecurityRoles.INSTRUCTOR);
+                put("/{id}", eventController.updateEvent(), SecurityRoles.ADMIN, SecurityRoles.INSTRUCTOR);
             });
         };
     }
