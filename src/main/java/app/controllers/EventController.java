@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import app.dtos.EventDTO;
 import app.dtos.UserDTO;
 import app.entities.Event;
+import app.entities.Status;
 import app.entities.User;
 import app.persistance.EventDAO;
 import app.persistance.UserDAO;
@@ -36,7 +37,7 @@ public class EventController {
             String email = jsonNode.get("email").asText();
             Integer eventID = jsonNode.get("id").asInt();
             User user = userDAO.getByID(email);
-            Event eventObj = eventDAO.getByID(eventID);
+            Event eventObj = eventDAO.getById(eventID);
             EventDAO.addUserToEvent(eventObj, user);
         };
     }
@@ -63,7 +64,7 @@ public class EventController {
     public Handler getEventById(){
         return ctx -> {
             int id = Integer.parseInt(ctx.pathParam("id"));
-            EventDTO eventDTO = new EventDTO(eventDAO.getEventById(id));
+            EventDTO eventDTO = new EventDTO(eventDAO.getById(id));
             String json = objectMapper.writeValueAsString(eventDTO);
             ctx.status(HttpStatus.OK).json(json);
         };
@@ -77,7 +78,7 @@ public class EventController {
             String email = jsonNode.get("email").asText();
             Integer eventID = jsonNode.get("id").asInt();
             User user = userDAO.getByID(email);
-            Event eventObj = eventDAO.getByID(eventID);
+            Event eventObj = eventDAO.getById(eventID);
             EventDAO.cancelRegistration(eventObj, user);
         };
     }
@@ -95,9 +96,19 @@ public class EventController {
     public Handler getRegistrationsToEvent() {
         return ctx -> {
             int eventId = Integer.parseInt(ctx.pathParam("id"));
-            Event event = eventDAO.getEventById(eventId);
+            Event event = eventDAO.getById(eventId);
             String json = objectMapper.writeValueAsString(event.getUsers().stream().map(u -> new UserDTO(u)).collect(Collectors.toSet()));
             ctx.status(HttpStatus.OK).json(json);
+        };
+    }
+
+    public Handler cancelEvent() {
+        return ctx -> {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            Event event = eventDAO.getById(id);
+            event.setStatus(Status.CANCELED);
+            eventDAO.update(event);
+            ctx.status(200);
         };
     }
 
