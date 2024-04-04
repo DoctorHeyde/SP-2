@@ -38,7 +38,7 @@ public class UserController {
                 return;
             }
             
-            userDAO.deleteUser(userDAO.getByID(user.getEmail()));
+            userDAO.deleteUser(userDAO.getById(user.getEmail()));
             ctx.status(HttpStatus.NO_CONTENT);
         };
     }
