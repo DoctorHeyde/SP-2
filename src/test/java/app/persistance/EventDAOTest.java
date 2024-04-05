@@ -11,12 +11,14 @@ import org.junit.jupiter.api.Test;
 import app.config.ApplicationConfig;
 import app.config.HibernateConfig;
 import app.entities.Event;
+import app.entities.Status;
 import app.entities.User;
 import app.utils.Routes;
 import app.utils.TestUtils;
 import io.restassured.RestAssured;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.TypedQuery;
 
 public class EventDAOTest {
     private static ApplicationConfig appConfig;
@@ -61,7 +63,7 @@ public class EventDAOTest {
 
     @Test
     void testAddUserToEvent() {
-        try(EntityManager em = emfTest.createEntityManager()){
+        try (EntityManager em = emfTest.createEntityManager()) {
             Event event = em.createQuery("From Event e where e.title = 'title1'", Event.class).getSingleResult();
             User user = em.createQuery("From User u where u.email = 'user'", User.class).getSingleResult();
             EventDAO.addUserToEvent(event, user);
@@ -74,12 +76,39 @@ public class EventDAOTest {
 
     @Test
     void testUpdate() {
-        try(EntityManager em = emfTest.createEntityManager()){
+        try (EntityManager em = emfTest.createEntityManager()) {
             Event event = em.createQuery("From Event e where e.title = 'title1'", Event.class).getSingleResult();
             event.setTitle("newTitle");
-            eventdao.update(event);
-            Event eventUpdated = em.find(Event.class, event.getId());
+            Event eventUpdated = eventdao.update(event);
             assertEquals("newTitle", eventUpdated.getTitle());
         }
+    }
+
+    @Test
+    void testGetAllEvents() {
+        try (EntityManager em = emfTest.createEntityManager()) {
+            assertEquals(4, eventdao.getAll().size());
+        }
+    }
+
+    @Test
+    void testGetById() {
+        try (EntityManager em = emfTest.createEntityManager()) {
+            Event event = em.createQuery("From Event e where e.title = 'title1'", Event.class).getSingleResult();
+            Event eventById = eventdao.getById(event.getId());
+            assertEquals(event.getTitle(), eventById.getTitle());
+        }
+    }
+
+    @Test
+    void testGetUpcomingEvent() {
+        try (EntityManager em = emfTest.createEntityManager()) {
+            assertEquals(2, eventdao.getUpcomingEvent().size());
+        }
+    }
+
+    @Test
+    void testGetEventByStatus() {
+        assertEquals(2, eventdao.getEventByStatus(Status.UPCOMING).size());
     }
 }
