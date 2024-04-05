@@ -8,6 +8,7 @@
 | HTTP method | REST Resource             |                              | Comment                     |
 |-------------|---------------------------|------------------------------|-----------------------------|
 | POST | `/api/auth/login`         | `response:` {response body}  | Login |
+| POST | `/api/auth/logout`        | `response:` satus code  | Logout |
 | POST | `/api/auth/register`      | `response:` {response body}  | Register |
 | POST | `/api/auth/addRoleToUser` | `response:` {response body}  | Add a role to a user |
 | PUT | `/api/event/registerUser` | `response:` none  | Adds a user to an event |
