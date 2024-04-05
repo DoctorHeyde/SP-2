@@ -20,11 +20,11 @@ public class EventDAO extends ADAO<Event, Integer> {
     private EventDAO() {
     }
 
-    public static EventDAO getInstance(EntityManagerFactory emf) {
+    public static EventDAO getInstance(EntityManagerFactory _emf) {
         if (instance == null) {
             instance = new EventDAO();
-            instance.emf = emf;
         }
+        emf = _emf;
         return instance;
     }
 
