@@ -127,4 +127,10 @@ public class SecurityController implements ISecurityController {
         };
     }
 
+    public Handler logout() {
+        return ctx -> {
+            ctx.attribute("user", null);
+        };
+    }
+
 }
