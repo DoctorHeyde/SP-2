@@ -32,7 +32,9 @@ import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseBody;
+
 import static io.restassured.RestAssured.*;
+
 import jakarta.persistence.EntityManagerFactory;
 
 public class UserControllerTest {
@@ -40,15 +42,15 @@ public class UserControllerTest {
     private static final String BASE_URL = "http://localhost:7777/api";
     private static EntityManagerFactory emfTest;
     private static ObjectMapper objectMapper = new ObjectMapper();
-    
+
     @BeforeAll
-    public static void beforeAll(){
+    public static void beforeAll() {
         RestAssured.baseURI = BASE_URL;
         objectMapper.findAndRegisterModules();
-        
+
         // Setup test database using docker testcontainers
         emfTest = HibernateConfig.getEntityManagerFactory(true);
-        
+
         Routes routes = Routes.getInstance(emfTest);
         // Start server
         appConfig = ApplicationConfig.getInstance(emfTest);
@@ -57,10 +59,10 @@ public class UserControllerTest {
                 .setExceptionHandling()
                 .checkSecurityRoles()
                 .setRoute(routes.testResources())
-                .setRoute(routes.securityResources()) 
-                .setRoute(routes.securedRoutes())               
+                .setRoute(routes.securityResources())
+                .setRoute(routes.securedRoutes())
                 .startServer(7777)
-            ;
+        ;
     }
 
     @BeforeEach
@@ -68,32 +70,33 @@ public class UserControllerTest {
         // Setup test database for each test
         TestUtils.createUsersAndRoles(emfTest);
         TestUtils.createEvents(emfTest);
-        
+
     }
-    
+
     @AfterAll
     static void afterAll() {
         emfTest.close();
         appConfig.stopServer();
     }
-        
+
 
     @Test
     public void getAllEvents() throws JsonMappingException, JsonProcessingException {
         String requestBody = "{\"email\": \"instructor\",\"password\": \"instructor\"}";
         Response logingResponse =
-            given()
-                .body(requestBody)
-            .when()
-                .post("/auth/login");
+                given()
+                        .body(requestBody)
+                        .when()
+                        .post("/auth/login");
 
         TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
         Header header = new Header("Authorization", "Bearer " + token.getToken());
-        
+
         Response getResponse = given()
-            .header(header)
-        .when()
-            .get("/events");
+
+                .header(header)
+                .when()
+                .get("/events");
 
         //EventDTO[] events = objectMapper.readValue(getResponse.asString(), EventDTO[].class);
         //Map<String,Event> allEvents = TestUtils.getEvents(emfTest);
@@ -103,7 +106,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void resetPassword(){
+    void resetPassword() {
 
         String requestLoginBody = "{\"email\": \"instructor\",\"password\": \"instructor\"}";
 
@@ -129,49 +132,75 @@ public class UserControllerTest {
                 .request("PUT", "resetUserPassword")
                 .then()
                 .statusCode(201);
-    }    
+    }
+
 
     @Test
-    public void deleteUser() throws JsonMappingException, JsonProcessingException{
+    public void deleteUser() throws JsonMappingException, JsonProcessingException {
         String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
         Response logingResponse =
-            given()
-                .body(requestLoginBody)
-            .when()
-                .post("/auth/login");
+                given()
+                        .body(requestLoginBody)
+                        .when()
+                        .post("/auth/login");
 
         TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
         Header header = new Header("Authorization", "Bearer " + token.getToken());
         User user = TestUtils.getUsers(emfTest).values().stream().filter(u -> u.getName().equals("user")).findFirst().get();
         given()
-            .header(header)
-            .when()
-            .delete("/users/delete/" + user.getEmail())
-            .then()
-            .statusCode(HttpStatus.NO_CONTENT.getCode());
-        
+                .header(header)
+                .when()
+                .delete("/users/delete/" + user.getEmail())
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.getCode());
+
         Map<String, User> users = TestUtils.getUsers(emfTest);
 
         // assertNull(users.get("user"));
     }
-    
+
     @Test
-    public void deleteUserWrongId() throws JsonMappingException, JsonProcessingException{
+    public void deleteUserWrongId() throws JsonMappingException, JsonProcessingException {
         String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
         Response logingResponse =
-            given()
-                .body(requestLoginBody)
-            .when()
-                .post("/auth/login");
+                given()
+                        .body(requestLoginBody)
+                        .when()
+                        .post("/auth/login");
 
         TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
         Header header = new Header("Authorization", "Bearer " + token.getToken());
         given()
-            .header(header)
-            .when()
-            .delete("/users/delete/" + "email")
-            .then()
-            .statusCode(HttpStatus.FORBIDDEN.getCode())
-            .body("msg", equalTo("Delete not allowed"));
+                .header(header)
+                .when()
+                .delete("/users/delete/" + "email")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.getCode())
+                .body("msg", equalTo("Delete not allowed"));
     }
+
+    @Test
+    public void updateUser() {
+        String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
+        TokenDTO token = given()
+                .contentType("application/json")
+                .body(requestLoginBody)
+                .when()
+                .post("/auth/login")
+                .then()
+                .extract()
+                .as(TokenDTO.class);
+
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
+
+        String requestBody = "{\"email\":\"user\",\"password\":\"email12\"}";
+        given()
+                .header(header)
+                .body(requestBody)
+                .when()
+                .put("/users/update")
+                .then()
+                .statusCode(201);
+    }
+
 }

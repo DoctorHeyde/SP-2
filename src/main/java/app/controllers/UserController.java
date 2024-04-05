@@ -2,10 +2,15 @@ package app.controllers;
 
 import java.util.stream.Collectors;
 
+
 import app.entities.User;
 import app.exceptions.EntityNotFoundException;
 import app.exceptions.NotAuthorizedException;
 import app.utils.TokenUtil;
+
+import app.dtos.EventDTO;
+import app.entities.Event;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import app.dtos.UserDTO;
@@ -34,6 +39,7 @@ public class UserController {
             ctx.status(HttpStatus.OK).json(json);
         };
     }
+
 
     public Handler resetPassword() {
         return ctx -> {
@@ -76,6 +82,22 @@ public class UserController {
         };
     }
 
+
+
+    public Handler updateUser() {
+        return ctx -> {
+
+            UserDTO updateUserAsDTO = ctx.bodyAsClass(UserDTO.class);
+
+            User updateUser = userDAO.getById(updateUserAsDTO.getEmail());
+
+            userDAO.updateUser(updateUser);
+            ctx.status(201).json("User has been updated ");
+
+
+        };
+    }
+
     public Handler deleteUser() {
         return ctx -> {
             String userId = ctx.pathParam("id");
@@ -89,6 +111,5 @@ public class UserController {
             ctx.status(HttpStatus.NO_CONTENT);
         };
     }
-    
 }
 
