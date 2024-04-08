@@ -33,8 +33,6 @@ public class EventController {
             
             ObjectMapper mapper = new ObjectMapper();
             JsonNode jsonNode = mapper.readTree(jsonBody);
-            String password = jsonNode.get("password").asText();
-            String event = jsonNode.get("event").asText();
             String email = jsonNode.get("email").asText();
             Integer eventID = jsonNode.get("id").asInt();
             User user = userDAO.getById(email);
