@@ -26,6 +26,7 @@ public class EventDAO extends ADAO<Event, Integer> {
             instance = new EventDAO();
         }
         emf = _emf;
+        ADAO.emf = emf;
         return instance;
     }
 
@@ -92,15 +93,6 @@ public class EventDAO extends ADAO<Event, Integer> {
             Event eventUpdatedInDb = em.merge(updatedEvent);
             em.getTransaction().commit();
             return eventUpdatedInDb;
-        }
-    }
-
-    public  Event create(Event event) {
-        try (EntityManager em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-            em.persist(event);
-            em.getTransaction().commit();
-            return event;
         }
     }
 }
