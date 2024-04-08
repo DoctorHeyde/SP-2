@@ -8,10 +8,11 @@ import jakarta.persistence.EntityManagerFactory;
 
 public class Main {
     private static final int port = 7170;
+    private static HibernateConfig hibernateConfig = new HibernateConfig();
 
     public static void main(String[] args) throws EntityNotFoundException {
         // JAVALIN SETUP
-        startServer(HibernateConfig.getEntityManagerFactory(false));
+        startServer(hibernateConfig.getEntityManagerFactory(false));
         //closeServer();
     }
 

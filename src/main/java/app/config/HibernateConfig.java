@@ -16,22 +16,16 @@ import jakarta.persistence.EntityManagerFactory;
 
 public class HibernateConfig {
 
-    private static EntityManagerFactory instace;
     private static String dbName;
 
-    public static EntityManagerFactory getEntityManagerFactory(boolean testing) {
+    public EntityManagerFactory getEntityManagerFactory(boolean testing) {
         if (testing) {
             dbName = "testdb";
-            if (instace == null) {
-                instace = setupHibernateConfigurationForTesting();
-            }
-            return instace;
+            return setupHibernateConfigurationForTesting();
+
         } else {
-            if (instace == null) {
-                dbName = getDBName();
-                instace = buildEntityFactoryConfig();
-            }
-            return instace;
+            dbName = getDBName();
+            return buildEntityFactoryConfig();
         }
     }
 

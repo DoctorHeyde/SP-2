@@ -24,12 +24,13 @@ public class EventDAOTest {
     private static ApplicationConfig appConfig;
     private static EntityManagerFactory emfTest;
     private static EventDAO eventdao;
+    private static HibernateConfig hibernateConfig = new HibernateConfig();
 
     @BeforeAll
     public static void beforeAll() {
 
         // Setup test database using docker testcontainers
-        emfTest = HibernateConfig.getEntityManagerFactory(true);
+        emfTest = hibernateConfig.getEntityManagerFactory(true);
         eventdao = EventDAO.getInstance(emfTest);
 
         Routes routes = Routes.getInstance(emfTest);
