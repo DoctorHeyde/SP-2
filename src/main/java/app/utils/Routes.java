@@ -32,6 +32,7 @@ public class Routes {
                 post("/login", securityController.login(), SecurityRoles.ANYONE);
                 post("/register", securityController.register(), SecurityRoles.ANYONE);
                 post("/addRoleToUser", securityController.addRoleToUser(), SecurityRoles.ADMIN);
+
             });
         };
     }
@@ -64,10 +65,18 @@ public class Routes {
                 delete("/delete/{id}", userController.deleteUser(), SecurityRoles.ADMIN,SecurityRoles.INSTRUCTOR,SecurityRoles.STUDENT,SecurityRoles.USER);
 
             });
+
             path("/events", () -> {
                 get(eventController.getAllEvents(), SecurityRoles.ADMIN, SecurityRoles.INSTRUCTOR);
                 put("/{id}", eventController.updateEvent(), SecurityRoles.ADMIN, SecurityRoles.INSTRUCTOR);
             });
+
+            before(securityController.authenticate());
+            path("/resetUserPassword", () -> {
+                put(userController.resetPassword(), SecurityRoles.ADMIN, SecurityRoles.STUDENT, SecurityRoles.INSTRUCTOR);
+            });
+
+            before(securityController.authenticate());
             path("/registrations", () -> {
                 get("/{id}", eventController.getRegistrationsToEvent(), SecurityRoles.INSTRUCTOR);
             });

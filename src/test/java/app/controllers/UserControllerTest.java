@@ -38,136 +38,167 @@ import static io.restassured.RestAssured.*;
 import jakarta.persistence.EntityManagerFactory;
 
 public class UserControllerTest {
-        private static ApplicationConfig appConfig;
-        private static final String BASE_URL = "http://localhost:7777/api";
-        private static EntityManagerFactory emfTest;
-        private static ObjectMapper objectMapper = new ObjectMapper();
-        private static HibernateConfig hibernateConfig = new HibernateConfig();
+    private static ApplicationConfig appConfig;
+    private static final String BASE_URL = "http://localhost:7777/api";
+    private static EntityManagerFactory emfTest;
+    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static HibernateConfig hibernateConfig = new HibernateConfig();
 
-        @BeforeAll
-        public static void beforeAll() {
-                RestAssured.baseURI = BASE_URL;
-                objectMapper.findAndRegisterModules();
+    @BeforeAll
+    public static void beforeAll() {
+        RestAssured.baseURI = BASE_URL;
+        objectMapper.findAndRegisterModules();
 
-                // Setup test database using docker testcontainers
-                emfTest = hibernateConfig.getEntityManagerFactory(true);
+        // Setup test database using docker testcontainers
+        emfTest = hibernateConfig.getEntityManagerFactory(true);
 
-                Routes routes = Routes.getInstance(emfTest);
-                // Start server
-                appConfig = ApplicationConfig.getInstance(emfTest);
-                appConfig
-                                .initiateServer()
-                                .setExceptionHandling()
-                                .checkSecurityRoles()
-                                .setRoute(routes.testResources())
-                                .setRoute(routes.securityResources())
-                                .setRoute(routes.securedRoutes())
-                                .startServer(7777);
-        }
+        Routes routes = Routes.getInstance(emfTest);
+        // Start server
+        appConfig = ApplicationConfig.getInstance(emfTest);
+        appConfig
+                .initiateServer()
+                .setExceptionHandling()
+                .checkSecurityRoles()
+                .setRoute(routes.testResources())
+                .setRoute(routes.securityResources())
+                .setRoute(routes.securedRoutes())
+                .startServer(7777);
+    }
 
-        @BeforeEach
-        public void setUpEach() {
-                // Setup test database for each test
-                TestUtils.createUsersAndRoles(emfTest);
-                TestUtils.createEvents(emfTest);
+    @BeforeEach
+    public void setUpEach() {
+        // Setup test database for each test
+        TestUtils.createUsersAndRoles(emfTest);
+        TestUtils.createEvents(emfTest);
 
-        }
+    }
 
-        @AfterAll
-        static void afterAll() {
-                emfTest.close();
-                appConfig.stopServer();
-        }
+    @AfterAll
+    static void afterAll() {
+        emfTest.close();
+        appConfig.stopServer();
+    }
 
-        @Test
-        public void getAllEvents() throws JsonMappingException, JsonProcessingException {
-                String requestBody = "{\"email\": \"instructor\",\"password\": \"instructor\"}";
-                Response logingResponse = given()
-                                .body(requestBody)
-                                .when()
-                                .post("/auth/login");
+    @Test
+    public void getAllEvents() throws JsonMappingException, JsonProcessingException {
+        String requestBody = "{\"email\": \"instructor\",\"password\": \"instructor\"}";
+        Response logingResponse = given()
+                .body(requestBody)
+                .when()
+                .post("/auth/login");
 
-                TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
-                Header header = new Header("Authorization", "Bearer " + token.getToken());
+        TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
 
-                Response getResponse = given()
-                                .header(header)
-                                .when()
-                                .get("/events");
+        Response getResponse = given()
+                .header(header)
+                .when()
+                .get("/events");
 
-                // EventDTO[] events = objectMapper.readValue(getResponse.asString(),
-                // EventDTO[].class);
-                // Map<String,Event> allEvents = TestUtils.getEvents(emfTest);
-                // for(EventDTO event : events){
-                // assertEquals(event.getTitle(), allEvents.get(event.getTitle()).getTitle());
-                // }
-        }
+        // EventDTO[] events = objectMapper.readValue(getResponse.asString(),
+        // EventDTO[].class);
+        // Map<String,Event> allEvents = TestUtils.getEvents(emfTest);
+        // for(EventDTO event : events){
+        // assertEquals(event.getTitle(), allEvents.get(event.getTitle()).getTitle());
+        // }
+    }
 
-        @Test
-        public void deleteUser() throws JsonMappingException, JsonProcessingException {
-                String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
-                Response logingResponse = given()
-                                .body(requestLoginBody)
-                                .when()
-                                .post("/auth/login");
 
-                TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
-                Header header = new Header("Authorization", "Bearer " + token.getToken());
-                User user = TestUtils.getUsers(emfTest).values().stream().filter(u -> u.getName().equals("user"))
-                                .findFirst().get();
-                given()
-                                .header(header)
-                                .when()
-                                .delete("/users/delete/" + user.getEmail())
-                                .then()
-                                .statusCode(HttpStatus.NO_CONTENT.getCode());
+    @Test
+    void resetPassword() {
 
-                Map<String, User> users = TestUtils.getUsers(emfTest);
+        String requestLoginBody = "{\"email\": \"instructor\",\"password\": \"instructor\"}";
 
-                // assertNull(users.get("user"));
-        }
+        TokenDTO token = given()
+                .contentType("application/json")
+                .body(requestLoginBody)
+                .when()
+                .post("/auth/login")
+                .then()
+                .extract()
+                .as(TokenDTO.class);
 
-        @Test
-        public void deleteUserWrongId() throws JsonMappingException, JsonProcessingException {
-                String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
-                Response logingResponse = given()
-                                .body(requestLoginBody)
-                                .when()
-                                .post("/auth/login");
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
 
-                TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
-                Header header = new Header("Authorization", "Bearer " + token.getToken());
-                given()
-                                .header(header)
-                                .when()
-                                .delete("/users/delete/" + "email")
-                                .then()
-                                .statusCode(HttpStatus.FORBIDDEN.getCode())
-                                .body("msg", equalTo("Delete not allowed"));
-        }
+        String updateBody = "{\"email\": \"instructor\", \"password\": \"instructor\", " +
+                "\"newPassword\": \"instructorChanged\"}";
 
-        @Test
-        public void updateUser() {
-                String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
-                TokenDTO token = given()
-                                .contentType("application/json")
-                                .body(requestLoginBody)
-                                .when()
-                                .post("/auth/login")
-                                .then()
-                                .extract()
-                                .as(TokenDTO.class);
+        given()
+                .when()
+                .header(header)
+                .body(updateBody)
+                .when()
+                .request("PUT", "resetUserPassword")
+                .then()
+                .statusCode(201);
+    }
 
-                Header header = new Header("Authorization", "Bearer " + token.getToken());
+    @Test
+    public void deleteUser() throws JsonMappingException, JsonProcessingException {
+        String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
+        Response logingResponse = given()
+                .body(requestLoginBody)
+                .when()
+                .post("/auth/login");
 
-                String requestBody = "{\"email\":\"user\",\"password\":\"email12\"}";
-                given()
-                                .header(header)
-                                .body(requestBody)
-                                .when()
-                                .put("/users/update")
-                                .then()
-                                .statusCode(201);
-        }
+        TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
+        User user = TestUtils.getUsers(emfTest).values().stream().filter(u -> u.getName().equals("user"))
+                .findFirst().get();
+        given()
+                .header(header)
+                .when()
+                .delete("/users/delete/" + user.getEmail())
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.getCode());
+
+        Map<String, User> users = TestUtils.getUsers(emfTest);
+
+    }
+
+
+    @Test
+    public void deleteUserWrongId() throws JsonMappingException, JsonProcessingException {
+        String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
+        Response logingResponse = given()
+                .body(requestLoginBody)
+                .when()
+                .post("/auth/login");
+
+        TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
+
+        given()
+                .header(header)
+                .when()
+                .delete("/users/delete/" + "email")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.getCode())
+                .body("msg", equalTo("Delete not allowed"));
+    }
+
+    @Test
+    public void updateUser() {
+        String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
+        TokenDTO token = given()
+                .contentType("application/json")
+                .body(requestLoginBody)
+                .when()
+                .post("/auth/login")
+                .then()
+                .extract()
+                .as(TokenDTO.class);
+
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
+
+        String requestBody = "{\"email\":\"user\",\"password\":\"email12\"}";
+        given()
+                .header(header)
+                .body(requestBody)
+                .when()
+                .put("/users/update")
+                .then()
+                .statusCode(201);
+    }
 
 }
