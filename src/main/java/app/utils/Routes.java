@@ -71,6 +71,8 @@ public class Routes {
             path("/registrations", () -> {
                 get("/{id}", eventController.getRegistrationsToEvent(), SecurityRoles.INSTRUCTOR);
             });
+            post("auth/logout", securityController.logout(), SecurityRoles.ANYONE);
+
         };
     }
 
