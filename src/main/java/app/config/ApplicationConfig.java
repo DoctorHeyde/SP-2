@@ -25,9 +25,9 @@ public class ApplicationConfig {
 
     public static ApplicationConfig getInstance(EntityManagerFactory emf) {
         if (instance == null) {
-            securityController = new SecurityController(emf);
             instance = new ApplicationConfig();
         }
+        securityController = new SecurityController(emf);
         return instance;
     }
 

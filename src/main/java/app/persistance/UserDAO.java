@@ -22,8 +22,8 @@ public class UserDAO implements IUserDAO {
     public static UserDAO getUserDAOInstance(EntityManagerFactory _emf) {
         if (instance == null) {
             instance = new UserDAO();
-            emf = _emf;
         }
+        emf = _emf;
         return instance;
     }
 

@@ -19,10 +19,10 @@ public class Routes {
     public static Routes getInstance(EntityManagerFactory emf) {
         if (instance == null) {
             instance = new Routes();
-            securityController = new SecurityController(emf);
-            userController = new UserController(emf);
-            eventController = new EventController(emf);
         }
+        securityController = new SecurityController(emf);
+        userController = new UserController(emf);
+        eventController = new EventController(emf);
         return instance;
     }
 
@@ -80,6 +80,8 @@ public class Routes {
             path("/registrations", () -> {
                 get("/{id}", eventController.getRegistrationsToEvent(), SecurityRoles.INSTRUCTOR);
             });
+            post("auth/logout", securityController.logout(), SecurityRoles.ANYONE);
+
         };
     }
 

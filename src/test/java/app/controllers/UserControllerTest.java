@@ -42,6 +42,7 @@ public class UserControllerTest {
     private static final String BASE_URL = "http://localhost:7777/api";
     private static EntityManagerFactory emfTest;
     private static ObjectMapper objectMapper = new ObjectMapper();
+    private static HibernateConfig hibernateConfig = new HibernateConfig();
 
     @BeforeAll
     public static void beforeAll() {
@@ -49,7 +50,7 @@ public class UserControllerTest {
         objectMapper.findAndRegisterModules();
 
         // Setup test database using docker testcontainers
-        emfTest = HibernateConfig.getEntityManagerFactory(true);
+        emfTest = hibernateConfig.getEntityManagerFactory(true);
 
         Routes routes = Routes.getInstance(emfTest);
         // Start server
@@ -61,8 +62,7 @@ public class UserControllerTest {
                 .setRoute(routes.testResources())
                 .setRoute(routes.securityResources())
                 .setRoute(routes.securedRoutes())
-                .startServer(7777)
-        ;
+                .startServer(7777);
     }
 
     @BeforeEach
@@ -79,31 +79,30 @@ public class UserControllerTest {
         appConfig.stopServer();
     }
 
-
     @Test
     public void getAllEvents() throws JsonMappingException, JsonProcessingException {
         String requestBody = "{\"email\": \"instructor\",\"password\": \"instructor\"}";
-        Response logingResponse =
-                given()
-                        .body(requestBody)
-                        .when()
-                        .post("/auth/login");
+        Response logingResponse = given()
+                .body(requestBody)
+                .when()
+                .post("/auth/login");
 
         TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
         Header header = new Header("Authorization", "Bearer " + token.getToken());
 
         Response getResponse = given()
-
                 .header(header)
                 .when()
                 .get("/events");
 
-        //EventDTO[] events = objectMapper.readValue(getResponse.asString(), EventDTO[].class);
-        //Map<String,Event> allEvents = TestUtils.getEvents(emfTest);
-        //for(EventDTO event : events){
-        //    assertEquals(event.getTitle(), allEvents.get(event.getTitle()).getTitle());
-        //}
+        // EventDTO[] events = objectMapper.readValue(getResponse.asString(),
+        // EventDTO[].class);
+        // Map<String,Event> allEvents = TestUtils.getEvents(emfTest);
+        // for(EventDTO event : events){
+        // assertEquals(event.getTitle(), allEvents.get(event.getTitle()).getTitle());
+        // }
     }
+
 
     @Test
     void resetPassword() {
@@ -134,19 +133,18 @@ public class UserControllerTest {
                 .statusCode(201);
     }
 
-
     @Test
     public void deleteUser() throws JsonMappingException, JsonProcessingException {
         String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
-        Response logingResponse =
-                given()
-                        .body(requestLoginBody)
-                        .when()
-                        .post("/auth/login");
+        Response logingResponse = given()
+                .body(requestLoginBody)
+                .when()
+                .post("/auth/login");
 
         TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
         Header header = new Header("Authorization", "Bearer " + token.getToken());
-        User user = TestUtils.getUsers(emfTest).values().stream().filter(u -> u.getName().equals("user")).findFirst().get();
+        User user = TestUtils.getUsers(emfTest).values().stream().filter(u -> u.getName().equals("user"))
+                .findFirst().get();
         given()
                 .header(header)
                 .when()
@@ -156,20 +154,20 @@ public class UserControllerTest {
 
         Map<String, User> users = TestUtils.getUsers(emfTest);
 
-        // assertNull(users.get("user"));
     }
+
 
     @Test
     public void deleteUserWrongId() throws JsonMappingException, JsonProcessingException {
         String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
-        Response logingResponse =
-                given()
-                        .body(requestLoginBody)
-                        .when()
-                        .post("/auth/login");
+        Response logingResponse = given()
+                .body(requestLoginBody)
+                .when()
+                .post("/auth/login");
 
         TokenDTO token = objectMapper.readValue(logingResponse.body().asString(), TokenDTO.class);
         Header header = new Header("Authorization", "Bearer " + token.getToken());
+
         given()
                 .header(header)
                 .when()
