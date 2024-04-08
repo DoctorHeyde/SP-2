@@ -7,11 +7,11 @@
 
 | HTTP method | REST Resource             |                              | Comment                     |
 |-------------|---------------------------|------------------------------|-----------------------------|
-| POST | `/api/auth/login`         | `response:` status code  | Login |
-| POST | `/api/auth/logout`        | `response:` satus code  | Logout |
-| POST | `/api/auth/register`      | `response:` {response body}  | Register |
-| POST | `/api/auth/addRoleToUser` | `response:` {response body}  | Add a role to a user |
-| PUT | `/api/event/registerUser` | `response:` none  | Adds a user to an event |
+| POST | `/api/auth/login`         | `request:` {"email":"email", "password":"password", "name":"name","phonenumber":000}  | Login |
+| POST | `/api/auth/logout`        | `request:` satus code  | Logout |
+| POST | `/api/auth/register`      | `request:` {"email":"email", "password":"password", "name":"name","phonenumber":000,[]}  | Register |
+| POST | `/api/auth/addRoleToUser` | `request:` {"email":"email","role":"role"}  | Add a role to a user |
+| PUT | `/api/event/registerUser` | `request:` {"email":"email","id":0}  | Adds a user to an event |          
 | PUT | `/api/event/cancelRegistration`| `response:` none | Cancels a registration |
 | GET | `/api/event/upcoming`| `response:` `[{ "id": number, "title": String, "startTime": String, "description": String, "dateOfEvent": String, "durationInHours: number, "maxNumberOfStudents: number, "locationOfEvent": String, "instructor": String, "price: number, "category": String, "image": String, "status": enum, "createdAt": String, "updatedAt": String, "canceledAt": String, "users": [{  "email": String,  "name": String, "phoneNumber": number, }]}]`  | Retrive all upcoming events |
 | GET | `/api/users`| `response:` {response body}  | Retrive all users |
