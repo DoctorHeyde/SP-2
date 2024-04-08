@@ -1,5 +1,6 @@
 package app.persistance;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ public class EventDAO extends ADAO<Event, Integer> {
             instance = new EventDAO();
         }
         emf = _emf;
+        ADAO.emf = emf;
         return instance;
     }
 

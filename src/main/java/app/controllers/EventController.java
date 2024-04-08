@@ -33,7 +33,6 @@ public class EventController {
             
             ObjectMapper mapper = new ObjectMapper();
             JsonNode jsonNode = mapper.readTree(jsonBody);
-            
             String email = jsonNode.get("email").asText();
             Integer eventID = jsonNode.get("id").asInt();
             User user = userDAO.getById(email);
@@ -69,6 +68,15 @@ public class EventController {
             EventDTO eventDTO = new EventDTO(eventDAO.getById(id));
             String json = objectMapper.writeValueAsString(eventDTO);
             ctx.status(HttpStatus.OK).json(json);
+        };
+    }
+
+    public Handler createEvent(){
+        return ctx -> {
+            EventDTO event = ctx.bodyAsClass(EventDTO.class);
+            Event e = new Event(event);
+            eventDAO.create(e);
+            ctx.status(HttpStatus.OK);
         };
     }
 

@@ -1,5 +1,24 @@
 package app.controllers;
 
+import app.entities.Event;
+import app.entities.Status;
+import io.restassured.internal.path.json.JSONAssertion;
+
+import static io.restassured.RestAssured.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import app.config.ApplicationConfig;
+import app.config.HibernateConfig;
+import app.dtos.TokenDTO;
+import app.utils.Routes;
+import io.restassured.RestAssured;
+import io.restassured.http.Header;
+import io.restassured.response.Response;
+import jakarta.persistence.EntityManagerFactory;
+
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -11,6 +30,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,10 +50,16 @@ import io.restassured.response.Response;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.time.LocalDate;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.matchesPattern;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class EventControllerTests {
+@Nested
+class EventControllerTests {
     private static ApplicationConfig appConfig;
     private static final String BASE_URL = "http://localhost:7777/api";
     private static EntityManagerFactory emfTest;
@@ -71,6 +97,7 @@ public class EventControllerTests {
         TestUtils.createEvents(emfTest);
         TestUtils.addEventToUser(emfTest);
     }
+
 
     @AfterAll
     static void afterAll() {
@@ -127,6 +154,9 @@ public class EventControllerTests {
                 .as(TokenDTO.class);
 
         Header header = new Header("Authorization", "Bearer " + token.getToken());
+
+        String requestBody = "{\"password\": \"user\",\"title\": \"title1\"}";
+
         given()
                 .contentType("application/json")
                 .header(header)
@@ -134,7 +164,32 @@ public class EventControllerTests {
                 .put("/event/cancelEvent/1")
                 .then()
                 .statusCode(200);
+    }
 
+    @Test
+    void createEvent() {
+        String requestLoginBody = "{\"email\": \"instructor\",\"password\": \"instructor\"}";
+        TokenDTO token = RestAssured
+                .given()
+                .contentType("application/json")
+                .body(requestLoginBody)
+                .when()
+                .post("/auth/login")
+                .then()
+                .extract()
+                .as(TokenDTO.class);
+
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
+        String requestBody = "{\"title\": \"title\", \"startTime\": \"startTime\", \"description\": \"description\", \"dateOfEvent\": \"2024-04-22\", \"durationInHours\": \"100\", \"maxNumberOfStudents\": \"10\", \"locationOfEvent\": \"locationOfEvent\", \"instructor\": \"instructor\", \"price\": \"100\", \"category\": \"category\", \"image\": \"image\", \"status\": \"UPCOMING\"}";
+
+        RestAssured.given()
+                .contentType("application/json")
+                .header(header)
+                .body(requestBody)
+                .when()
+                .put("/event/createEvent")
+                .then()
+                .statusCode(200);
     }
 
     @Test
@@ -312,7 +367,3 @@ public class EventControllerTests {
     }
 
 }
-
-
-
-

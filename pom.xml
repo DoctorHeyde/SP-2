@@ -20,7 +20,7 @@
         <postgresql.version>42.6.0</postgresql.version>
         <nimbus.version>9.10</nimbus.version>
         <testcontainers.version>1.19.5</testcontainers.version>
-        <db.name>SP2</db.name>
+        <db.name>sp2</db.name>
     </properties>
 
     <dependencies>

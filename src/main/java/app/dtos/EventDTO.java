@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import app.entities.Event;
 import app.entities.Status;
 import app.entities.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +33,6 @@ public class EventDTO {
     private String title;
     private String startTime;
     private String description;
-
     private String dateOfEvent;
     private int durationInHours;
     private int maxNumberOfStudents;
@@ -47,14 +47,25 @@ public class EventDTO {
     private String canceledAt;
     private Set<UserDTO> users;
 
-    public EventDTO(String title) {
-        this.title = title;
-    }
-
     public EventDTO(String title, String dateOfEvent) {
         this.title = title;
         this.dateOfEvent = dateOfEvent;
 
+    }
+
+    public EventDTO(String title, String startTime, String description, String dateOfEvent, int durationInHours, int maxNumberOfStudents, String locationOfEvent, String instructor, double price, String category, String image, Status status) {
+        this.title = title;
+        this.startTime = startTime;
+        this.description = description;
+        this.dateOfEvent = dateOfEvent;
+        this.durationInHours = durationInHours;
+        this.maxNumberOfStudents = maxNumberOfStudents;
+        this.locationOfEvent = locationOfEvent;
+        this.instructor = instructor;
+        this.price = price;
+        this.category = category;
+        this.image = image;
+        this.status = status;
     }
 
     public EventDTO(Event event) {

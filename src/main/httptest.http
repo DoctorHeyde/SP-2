@@ -22,7 +22,26 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:7170/api/event/upcoming
+GET http://localhost:7170/api/event/createEvent
+
+###
+POST  http://localhost:7170/api/event/
+Content-Type: application/json
+
+{
+  "title": "title",
+  "startTime": "startTime",
+  "description": "description",
+  "LocalDate": "2024-04-22",
+  "durationInHour": "100",
+  "maxNumberOfStudents": "10",
+  "locationOfEvent": "locationOfEvent",
+  "instructor": "instructor",
+  "price": "100",
+  "category": "category",
+  "image": "image",
+  "Status": "Status.UPCOMING"
+}
 
 
 ###
@@ -45,7 +64,6 @@ Content-Type: application/json
   "status": "UPCOMING"
 }
 
-
 ###
 PUT http://localhost:7170/api/resetUserPassword
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJMYXVyaXR6IEhhdWdlIiwibmFtZSI6IlRvYmlhcyIsInN1YiI6InRvYmlhc0BlbWFpbC5kayIsImV4cCI6MTcxMjI0MzQ4OCwiZW1haWwiOiJ0b2JpYXNAZW1haWwuZGsiLCJyb2xlcyI6IixpbnN0cnVjdG9yLHVzZXIifQ.GpyPO-lhCjIFP1dyEmQsTaCsiHY9d3_IblUMBejDBvE
@@ -56,5 +74,4 @@ Content-Type: application/json
   "password": "1234",
   "newPassword": "2222"
 }
-
 
