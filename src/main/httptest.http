@@ -23,3 +23,23 @@ Content-Type: application/json
 
 ###
 GET http://localhost:7170/api/event/upcoming
+
+###
+POST  http://localhost:7170/api/event/
+Content-Type: application/json
+
+{
+  "title": "title",
+  "startTime": "startTime",
+  "description": "description",
+  "LocalDate": "2024-04-22",
+  "durationInHour": "100",
+  "maxNumberOfStudents": "10",
+  "locationOfEvent": "locationOfEvent",
+  "instructor": "instructor",
+  "price": "100",
+  "category": "category",
+  "image": "image",
+  "Status": "Status.UPCOMING"
+}
+

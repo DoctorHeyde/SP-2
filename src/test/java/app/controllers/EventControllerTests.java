@@ -1,8 +1,10 @@
 package app.controllers;
 
 import app.entities.Event;
+import app.entities.Status;
 import io.restassured.internal.path.json.JSONAssertion;
-import static io.restassured.RestAssured.given;
+
+import static io.restassured.RestAssured.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.*;
@@ -38,7 +40,6 @@ import jakarta.persistence.EntityManagerFactory;
 
 import java.time.LocalDate;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
@@ -163,19 +164,28 @@ class EventControllerTests {
 
     @Test
     void createEvent() {
+        String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
+        TokenDTO token = RestAssured
+                .given()
+                .contentType("application/json")
+                .body(requestLoginBody)
+                .when()
+                .post("/auth/login")
+                .then()
+                .extract()
+                .as(TokenDTO.class);
 
-        String requestBody = "{\"title1\": \"startTime\": \"description\"}";
+        Header header = new Header("Authorization", "Bearer " + token.getToken());
+        String requestBody = "{\"title\": \"title\", \"startTime\": \"startTime\", \"description\": \"description\", \"LocalDate\": \"2024-04-22\", \"durationInHour\": \"100\", \"maxNumberOfStudents\": \"10\", \"locationOfEvent\": \"locationOfEvent\", \"instructor\": \"instructor\", \"price\": \"100\", \"category\": \"category\", \"image\": \"image\", \"Status\": \"Status.UPCOMING\"}";
+
         RestAssured.given()
                 .contentType("application/json")
+                .header(header)
                 .body(requestBody)
                 .when()
-                .put("/event/createEvent")
+                .put("/event")
                 .then()
                 .statusCode(200);
-
-
-        String actual = "{\"title\":\"title1\",\"startTime\":\"startTime\",\"description\":\"description\"}";
-
     }
 
     @Test
