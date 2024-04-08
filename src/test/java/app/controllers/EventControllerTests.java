@@ -168,7 +168,7 @@ class EventControllerTests {
 
     @Test
     void createEvent() {
-        String requestLoginBody = "{\"email\": \"user\",\"password\": \"user\"}";
+        String requestLoginBody = "{\"email\": \"instructor\",\"password\": \"instructor\"}";
         TokenDTO token = RestAssured
                 .given()
                 .contentType("application/json")
@@ -180,14 +180,14 @@ class EventControllerTests {
                 .as(TokenDTO.class);
 
         Header header = new Header("Authorization", "Bearer " + token.getToken());
-        String requestBody = "{\"title\": \"title\", \"startTime\": \"startTime\", \"description\": \"description\", \"LocalDate\": \"2024-04-22\", \"durationInHour\": \"100\", \"maxNumberOfStudents\": \"10\", \"locationOfEvent\": \"locationOfEvent\", \"instructor\": \"instructor\", \"price\": \"100\", \"category\": \"category\", \"image\": \"image\", \"Status\": \"Status.UPCOMING\"}";
+        String requestBody = "{\"title\": \"title\", \"startTime\": \"startTime\", \"description\": \"description\", \"dateOfEvent\": \"2024-04-22\", \"durationInHours\": \"100\", \"maxNumberOfStudents\": \"10\", \"locationOfEvent\": \"locationOfEvent\", \"instructor\": \"instructor\", \"price\": \"100\", \"category\": \"category\", \"image\": \"image\", \"status\": \"UPCOMING\"}";
 
         RestAssured.given()
                 .contentType("application/json")
                 .header(header)
                 .body(requestBody)
                 .when()
-                .put("/event")
+                .put("/event/createEvent")
                 .then()
                 .statusCode(200);
     }

@@ -94,4 +94,13 @@ public class EventDAO extends ADAO<Event, Integer> {
             return eventUpdatedInDb;
         }
     }
+
+    public  Event create(Event event) {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            em.persist(event);
+            em.getTransaction().commit();
+            return event;
+        }
+    }
 }

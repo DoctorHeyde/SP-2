@@ -22,10 +22,10 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:7170/api/event/upcoming
+GET http://localhost:7170/api/event/createEvent
 
 ###
-POST  http://localhost:7170/api/events/
+POST  http://localhost:7170/api/event/
 Content-Type: application/json
 
 {

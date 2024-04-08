@@ -82,10 +82,8 @@ public class Event {
         this.title = eventDTO.getTitle();
         this.startTime = eventDTO.getStartTime();
         this.description = eventDTO.getDescription();
-
         LocalDate dateOfEventFromDTO = LocalDate.parse(eventDTO.getDateOfEvent());
         this.dateOfEvent = dateOfEventFromDTO;
-
         this.durationInHours = eventDTO.getDurationInHours();
         this.maxNumberOfStudents = eventDTO.getMaxNumberOfStudents();
         this.locationOfEvent = eventDTO.getLocationOfEvent();

@@ -75,8 +75,10 @@ public class EventController {
 
     public Handler createEvent(){
         return ctx -> {
-            Event event = ctx.bodyAsClass(Event.class);
-            eventDAO.create(event);
+            EventDTO event = ctx.bodyAsClass(EventDTO.class);
+            Event e = new Event(event);
+            eventDAO.create(e);
+            ctx.status(HttpStatus.OK);
         };
     }
 
