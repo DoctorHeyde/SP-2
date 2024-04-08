@@ -22,8 +22,8 @@ public class UserDAO implements IUserDAO {
     public static UserDAO getUserDAOInstance(EntityManagerFactory _emf) {
         if (instance == null) {
             instance = new UserDAO();
-            emf = _emf;
         }
+        emf = _emf;
         return instance;
     }
 
@@ -107,9 +107,26 @@ public class UserDAO implements IUserDAO {
         }       
     }
 
-    public User getByID(String id) {
+    public User getById(String id) {
         try (EntityManager em = emf.createEntityManager()) {
             return em.find(User.class, id);
+        }
+    }
+
+    public void updateUser(User user){
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            em.merge(user);
+            em.getTransaction().commit();
+        }
+
+    }
+
+    public void deleteUser(User user) {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            em.remove(user);
+            em.getTransaction().commit();
         }
     }
 }

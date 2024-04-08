@@ -33,14 +33,16 @@ public class AdminTests {
     private static final String BASE_URL = "http://localhost:7777/api";
     private static EntityManagerFactory emfTest;
     private static ObjectMapper objectMapper = new ObjectMapper();
+    private static HibernateConfig hibernateConfig = new HibernateConfig();
     
     @BeforeAll
     public static void beforeAll(){
+        hibernateConfig = new HibernateConfig();
         RestAssured.baseURI = BASE_URL;
         objectMapper.findAndRegisterModules();
         
         // Setup test database using docker testcontainers
-        emfTest = HibernateConfig.getEntityManagerFactory(true);
+        emfTest = hibernateConfig.getEntityManagerFactory(true);
         
         Routes routes = Routes.getInstance(emfTest);
         // Start server

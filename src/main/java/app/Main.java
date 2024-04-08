@@ -8,10 +8,11 @@ import jakarta.persistence.EntityManagerFactory;
 
 public class Main {
     private static final int port = 7170;
+    private static HibernateConfig hibernateConfig = new HibernateConfig();
 
     public static void main(String[] args) throws EntityNotFoundException {
         // JAVALIN SETUP
-        startServer(HibernateConfig.getEntityManagerFactory(false));
+        startServer(hibernateConfig.getEntityManagerFactory(false));
         //closeServer();
     }
 
@@ -25,6 +26,7 @@ public class Main {
                 .setRoute(routes.securityResources())
                 .setRoute(routes.testResources())
                 .setRoute(routes.eventResources())
+                .setRoute(routes.securedRoutes())
                 //Add more endpoints here
                 .checkSecurityRoles();
     }

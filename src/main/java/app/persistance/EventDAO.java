@@ -11,6 +11,7 @@ import app.entities.Status;
 import app.entities.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.TypedQuery;
 
 public class EventDAO extends ADAO<Event, Integer> {
     private static EntityManagerFactory emf;
@@ -20,11 +21,11 @@ public class EventDAO extends ADAO<Event, Integer> {
     private EventDAO() {
     }
 
-    public static EventDAO getInstance(EntityManagerFactory emf) {
+    public static EventDAO getInstance(EntityManagerFactory _emf) {
         if (instance == null) {
             instance = new EventDAO();
-            instance.emf = emf;
         }
+        emf = _emf;
         return instance;
     }
 
@@ -37,43 +38,25 @@ public class EventDAO extends ADAO<Event, Integer> {
         }
     }
 
-    public List<Event> getAllEvents() {
+    @Override
+    public List<Event> getAll() {
         try (EntityManager em = emf.createEntityManager()) {
             return em.createQuery("From Event e", Event.class).getResultList();
         }
     }
 
-    @Override
-    public List<Event> getAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAll'");
-    }
 
     @Override
-    public Event getByID(Integer id) {
+    public Event getById(Integer id) {
         try (EntityManager em = emf.createEntityManager()) {
             return em.find(Event.class, id);
         }
     }
-
-    @Override
-    public void update(Event t) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
-    }
-
 
     public List<Event> getUpcomingEvent() {
         try (EntityManager em = emf.createEntityManager()) {
             var query = em.createQuery("select a from Event a where a.status = :status").setParameter("status", Status.UPCOMING);
             return query.getResultList();
-        }
-    }
-
-    public Event getEventById(int id) {
-        try (EntityManager em = emf.createEntityManager()) {
-            return em.find(Event.class, id);
-
         }
     }
 
@@ -83,6 +66,32 @@ public class EventDAO extends ADAO<Event, Integer> {
             eventObj.removeUser(user);
             em.merge(eventObj);
             em.getTransaction().commit();
+        }
+    }
+
+    public List<Event> getEventByCategory(String category) {
+        try(var em = emf.createEntityManager()){
+            TypedQuery<Event> query = em.createQuery("SELECT e FROM Event e WHERE e.category = :category", Event.class).setParameter("category", category);
+            return query.getResultList();
+        }
+    }
+
+    public List<Event> getEventByStatus(Status status) {
+        try(var em = emf.createEntityManager()){
+            TypedQuery<Event> query = em.createQuery("SELECT e FROM Event e WHERE e.status = :status", Event.class).setParameter("status", status);
+            return query.getResultList();
+        }
+    }
+    
+    @Override
+    public Event update(Event updatedEvent) {
+
+        try(var em = emf.createEntityManager()){
+
+            em.getTransaction().begin();
+            Event eventUpdatedInDb = em.merge(updatedEvent);
+            em.getTransaction().commit();
+            return eventUpdatedInDb;
         }
     }
 }

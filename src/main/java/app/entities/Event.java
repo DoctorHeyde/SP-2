@@ -1,6 +1,7 @@
 package app.entities;
 
 
+import app.dtos.EventDTO;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,17 +31,15 @@ public class Event {
 
     private LocalDate dateOfEvent;
 
-    @Column(nullable = true)
     private int durationInHours;
 
     private int maxNumberOfStudents;
-
 
     private String locationOfEvent;
 
     private String instructor;
 
-    @Column(nullable = true)
+
     private double price;
 
     private String category;
@@ -77,6 +76,25 @@ public class Event {
         this.category = category;
         this.image = image;
         this.status = status;
+    }
+
+    public Event (EventDTO eventDTO){
+        this.title = eventDTO.getTitle();
+        this.startTime = eventDTO.getStartTime();
+        this.description = eventDTO.getDescription();
+
+        LocalDate dateOfEventFromDTO = LocalDate.parse(eventDTO.getDateOfEvent());
+        this.dateOfEvent = dateOfEventFromDTO;
+
+        this.durationInHours = eventDTO.getDurationInHours();
+        this.maxNumberOfStudents = eventDTO.getMaxNumberOfStudents();
+        this.locationOfEvent = eventDTO.getLocationOfEvent();
+        this.instructor = eventDTO.getInstructor();
+        this.price = eventDTO.getPrice();
+        this.category = eventDTO.getCategory();
+        this.image = eventDTO.getImage();
+
+        this.status = eventDTO.getStatus();
     }
 
     @PrePersist

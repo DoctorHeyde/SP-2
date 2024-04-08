@@ -25,7 +25,7 @@ Content-Type: application/json
 GET http://localhost:7170/api/event/upcoming
 
 ###
-POST  http://localhost:7170/api/event/
+POST  http://localhost:7170/api/events/
 Content-Type: application/json
 
 {
@@ -41,5 +41,26 @@ Content-Type: application/json
   "category": "category",
   "image": "image",
   "Status": "Status.UPCOMING"
+}
+
+
+###
+PUT http://localhost:7170/api/events/4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJMYXVyaXR6IEhhdWdlIiwibmFtZSI6IkZpbm4iLCJzdWIiOiJmaW5uQGVtYWlsLmRrIiwiZXhwIjoxNzEyMjIxOTY0LCJlbWFpbCI6ImZpbm5AZW1haWwuZGsiLCJyb2xlcyI6IixpbnN0cnVjdG9yLHVzZXIifQ.pM6ti0RxeGALYIKp0TVgdkakzEdVD4S0dSGmIz6U1LY
+Content-Type: application/json
+
+{
+  "title": "title4",
+  "startTime": "18:00 pm",
+  "description": "Football practice",
+  "dateOfEvent": "2024-05-04",
+  "durationInHours": 2,
+  "maxNumberOfStudents": 44,
+  "locationOfEvent": "KFUM Boldkblub Kbh",
+  "instructor": "instructor",
+  "price": 20.0,
+  "category": "Sport",
+  "image": "image",
+  "status": "UPCOMING"
 }
 
