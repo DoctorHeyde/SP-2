@@ -13,29 +13,7 @@
 | POST | `/api/auth/addRoleToUser` | `response:` {response body}  | Add a role to a user |
 | PUT | `/api/event/registerUser` | `response:` none  | Adds a user to an event |
 | PUT | `/api/event/cancelRegistration`| `response:` none | Cancels a registration |
-| GET | `/api/event/upcoming`| `response:` [{```JSON
-"id": number,
-"title": String,
-"startTime": String,
-"description": String,
-"dateOfEvent": String,
-"durationInHours: number,
-"maxNumberOfStudents: number,
-"locationOfEvent": String,
-"instructor": String,
-"price: number,
-"category": String,
-"image": String,
-"status": enum,
-"createdAt": String,
-"updatedAt": String,
-"canceledAt": String,
-"users": [{
- "email": String,
- "name": String,
- "phoneNumber": number,
- }]
-}]```  | Retrive all upcoming events |
+| GET | `/api/event/upcoming`| `response:` `[{ "id": number, "title": String, "startTime": String, "description": String, "dateOfEvent": String, "durationInHours: number, "maxNumberOfStudents: number, "locationOfEvent": String, "instructor": String, "price: number, "category": String, "image": String, "status": enum, "createdAt": String, "updatedAt": String, "canceledAt": String, "users": [{  "email": String,  "name": String, "phoneNumber": number, }]}]`  | Retrive all upcoming events |
 | GET | `/api/users`| `response:` {response body}  | Retrive all users |
 | PUT | `/api/users/update`| `response:` {response body}  | update a user |
 | GET | `/api/users/delete/{id}`| `response:` {response body}  | Delete a specific user |
