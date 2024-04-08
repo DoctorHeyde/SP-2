@@ -24,4 +24,4 @@
 | GET | `/api/events/category/{category}`             | `response:` [{response body}]  | Retrieves the subset of all events that have a spcific category |
 | GET | `/api/events/status/{status}`             | `response:` [{response body}]  | Retrieves the subset of all events that have a spcific status |
 | GET | `/api/registrations/{id}`         | `response:` [{response body}]  | Retrieves all registrations to a spesific event |
-| GET | `/api/registration/{userid}/{eventid}` | `response:` status code | Tells if the user is registed to a spesific event |
+| GET | `/api/registration/{userid}/{eventid}` | `response:<br><pre>{&#13;"msg":"Registration found/Registration not found"&#13;}</pre> | Tells if the user is registed to a spesific event |
