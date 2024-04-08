@@ -3,9 +3,9 @@ POST http://localhost:7170/api/auth/register
 Content-Type: application/json
 
 {
-  "email": "finn@email.dk",
+  "email": "tobias@email.dk",
   "password": "1234",
-  "name": "Finn",
+  "name": "Tobias",
   "phoneNumber": 20623882,
   "roles": ["user", "instructor"]
 }
@@ -17,7 +17,7 @@ Content-Type: application/json
 
 {
   "email": "finn@email.dk",
-  "password": "1234"
+  "password": "4321"
 
 }
 
@@ -62,5 +62,16 @@ Content-Type: application/json
   "category": "Sport",
   "image": "image",
   "status": "UPCOMING"
+}
+
+###
+PUT http://localhost:7170/api/resetUserPassword
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJMYXVyaXR6IEhhdWdlIiwibmFtZSI6IlRvYmlhcyIsInN1YiI6InRvYmlhc0BlbWFpbC5kayIsImV4cCI6MTcxMjI0MzQ4OCwiZW1haWwiOiJ0b2JpYXNAZW1haWwuZGsiLCJyb2xlcyI6IixpbnN0cnVjdG9yLHVzZXIifQ.GpyPO-lhCjIFP1dyEmQsTaCsiHY9d3_IblUMBejDBvE
+Content-Type: application/json
+
+{
+  "email": "tobias@email.dk",
+  "password": "1234",
+  "newPassword": "2222"
 }
 

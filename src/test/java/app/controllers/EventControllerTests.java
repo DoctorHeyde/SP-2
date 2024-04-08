@@ -306,12 +306,9 @@ class EventControllerTests {
         .when()
             .get("/registrations/" + eventId)
             .then()
-            .statusCode(200)
-            ;
+            .statusCode(200);
         
-        // UserDTO[] users = objectMapper.readValue(getResponse.asString(), UserDTO[].class);
-        // assertEquals(1, users.length);
-        // assertEquals("user", users[0].getName());
+
 
     }
 
@@ -339,13 +336,6 @@ class EventControllerTests {
                 .when()
                 .header(header)
                 .body(updateBody)
-                /*.body(new Event("title4", "startTime", "description",
-                        LocalDate.of(2024, 04, 29),
-                        100, 44,
-                        "locationOfEvent", "instructor", 20d, "Sport",
-                        "image", Status.UPCOMING))
-
-                 */
                 .when()
                 .request("PUT", "events/4")
                 .then()
@@ -375,4 +365,5 @@ class EventControllerTests {
         .assertThat()
         .statusCode(HttpStatus.FOUND.getCode());
     }
+
 }

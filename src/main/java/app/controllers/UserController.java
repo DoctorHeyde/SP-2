@@ -2,17 +2,25 @@ package app.controllers;
 
 import java.util.stream.Collectors;
 
+
+import app.entities.User;
+import app.exceptions.EntityNotFoundException;
+import app.exceptions.NotAuthorizedException;
+import app.utils.TokenUtil;
+
 import app.dtos.EventDTO;
 import app.entities.Event;
-import app.entities.User;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import app.dtos.UserDTO;
 import app.entities.User;
 import app.persistance.UserDAO;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.javalin.http.Handler;
 import io.javalin.http.HttpStatus;
 import jakarta.persistence.EntityManagerFactory;
+import app.entities.Role;
 
 
 public class UserController {
@@ -33,6 +41,49 @@ public class UserController {
     }
 
 
+    public Handler resetPassword() {
+        return ctx -> {
+
+            ObjectNode returnObject = objectMapper.createObjectNode();
+
+            try {
+                // Getting email, password and newPassword entered by logged in user
+                UserDTO userDTO = ctx.bodyAsClass(UserDTO.class);
+
+                // Getting email, name and roles of the logged in user
+                String header = ctx.header("Authorization");
+                String token = header.split(" ")[1];
+                UserDTO verifiedTokenUser = TokenUtil.verifyToken(token);
+
+                // Checking if the email entered when resetting password actually is the same
+                // as the email of the logged in user
+                if (verifiedTokenUser.getEmail().equalsIgnoreCase(userDTO.getEmail())) {
+
+                    // Verifying the password entered by the user when resetting the password
+                    User verifiedUserEntity = userDAO.verifyUser(userDTO.getEmail(), userDTO.getPassword());
+
+                    // Setting the new password
+                    verifiedUserEntity.setNewPassword(userDTO.getNewPassword());
+
+                    // Updating the password of the user
+                    userDAO.updateUser(verifiedUserEntity);
+
+                    ctx.status(201).json("Password has been reset");
+                }
+                else{
+                    throw new NotAuthorizedException(401, "You have to enter the email that you've logged in with");
+                }
+
+            } catch (EntityNotFoundException e) {
+
+                ctx.status(HttpStatus.NOT_FOUND);
+                ctx.json(returnObject.put("Message: ", e.getMessage()));
+            }
+        };
+    }
+
+
+
     public Handler updateUser() {
         return ctx -> {
 
@@ -46,6 +97,7 @@ public class UserController {
 
         };
     }
+
     public Handler deleteUser() {
         return ctx -> {
             String userId = ctx.pathParam("id");
@@ -59,5 +111,5 @@ public class UserController {
             ctx.status(HttpStatus.NO_CONTENT);
         };
     }
-
 }
+

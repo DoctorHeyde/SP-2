@@ -56,6 +56,9 @@ public class User {
     }
 
 
+    public void setNewPassword(String newPassword){
+        this.password = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+    }
     public Set<String> getRolesAsString(){
 
         if (roles.isEmpty()) {

@@ -17,7 +17,7 @@ import app.utils.Routes;
 import app.utils.TestUtils;
 import io.restassured.RestAssured;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;                                                                      
 import jakarta.persistence.TypedQuery;
 
 public class EventDAOTest {
@@ -67,9 +67,12 @@ public class EventDAOTest {
         try (EntityManager em = emfTest.createEntityManager()) {
             Event event = em.createQuery("From Event e where e.title = 'title1'", Event.class).getSingleResult();
             User user = em.createQuery("From User u where u.email = 'user'", User.class).getSingleResult();
+
             EventDAO.addUserToEvent(event, user);
+
             Event eventUpdated = em.find(Event.class, event.getId());
             User userUpdated = em.find(User.class, user.getEmail());
+
             assertTrue(eventUpdated.getUsers().contains(user));
             assertTrue(userUpdated.getEvents().contains(event));
         }

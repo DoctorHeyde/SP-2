@@ -155,7 +155,9 @@ public class EventController {
 
             Event updatedEvent = new Event(updatedEventAsDTO);
             updatedEvent.setId(id);
+
             Event updatedEventNowInDB = eventDAO.update(updatedEvent);
+
 
             EventDTO updatedEventInDBAsDTO = new EventDTO(updatedEventNowInDB);
             String json = objectMapper.writeValueAsString(updatedEventInDBAsDTO);
