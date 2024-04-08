@@ -23,12 +23,13 @@ public class UserDAOTest {
     private static ApplicationConfig appConfig;
     private static EntityManagerFactory emfTest;
     private static UserDAO userDAO;
+    private static HibernateConfig hibernateConfig = new HibernateConfig();
 
     @BeforeAll
     public static void beforeAll() {
 
         // Setup test database using docker testcontainers
-        emfTest = HibernateConfig.getEntityManagerFactory(true);
+        emfTest = hibernateConfig.getEntityManagerFactory(true);
         userDAO = UserDAO.getUserDAOInstance(emfTest);
 
         Routes routes = Routes.getInstance(emfTest);
